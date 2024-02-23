@@ -4,7 +4,7 @@ import com.example.clny.dto.ReactionDTO;
 import com.example.clny.model.Reaction;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ReactionMapper {
 
     ReactionDTO reactionToReactionDTO(Reaction reaction);

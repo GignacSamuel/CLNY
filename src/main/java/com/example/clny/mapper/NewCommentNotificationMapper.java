@@ -4,7 +4,7 @@ import com.example.clny.dto.NewCommentNotificationDTO;
 import com.example.clny.model.NewCommentNotification;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface NewCommentNotificationMapper {
 
     NewCommentNotificationDTO newCommentNotificationToNewCommentNotificationDTO(NewCommentNotification newCommentNotification);

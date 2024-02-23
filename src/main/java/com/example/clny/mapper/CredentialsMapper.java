@@ -4,7 +4,7 @@ import com.example.clny.dto.CredentialsDTO;
 import com.example.clny.model.Credentials;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CredentialsMapper {
 
     CredentialsDTO credentialsToCredentialsDTO(Credentials credentials);
