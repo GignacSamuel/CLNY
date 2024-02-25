@@ -1,5 +1,7 @@
 package com.example.clny.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,10 +13,13 @@ public class UserDTO {
 
     private Long id;
 
+    @NotBlank
     private String firstName;
 
+    @NotBlank
     private String lastName;
 
+    @NotNull
     private CredentialsDTO credentials;
 
     private ProfileDTO profile;

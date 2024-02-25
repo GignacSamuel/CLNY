@@ -1,5 +1,7 @@
 package com.example.clny.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,12 +13,15 @@ public class MessageDTO {
 
     private Long id;
 
+    @NotBlank
     private String content;
 
     private Date messageDate;
 
+    @NotNull
     private UserDTO author;
 
+    @NotNull
     private ConversationDTO conversation;
 
     public MessageDTO() {

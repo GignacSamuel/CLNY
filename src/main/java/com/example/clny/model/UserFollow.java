@@ -1,6 +1,7 @@
 package com.example.clny.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,9 +16,11 @@ public class UserFollow {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
     @ManyToOne
     private User follower;
 
+    @NotNull
     @ManyToOne
     private User followed;
 

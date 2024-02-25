@@ -1,6 +1,7 @@
 package com.example.clny.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,14 +16,17 @@ public class Reaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private ReactionType type;
 
     private final Date reactionDate = new Date();
 
+    @NotNull
     @ManyToOne
     private User author;
 
+    @NotNull
     @ManyToOne
     private Post post;
 

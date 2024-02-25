@@ -1,5 +1,6 @@
 package com.example.clny.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,8 +12,10 @@ public class UserFollowDTO {
 
     private Long id;
 
+    @NotNull
     private UserDTO follower;
 
+    @NotNull
     private UserDTO followed;
 
     private Date followDate;

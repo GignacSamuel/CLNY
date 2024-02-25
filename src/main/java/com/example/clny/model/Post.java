@@ -1,6 +1,8 @@
 package com.example.clny.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +18,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank
     private String content;
 
     @ElementCollection
@@ -23,6 +26,7 @@ public class Post {
 
     private final Date postDate = new Date();
 
+    @NotNull
     @ManyToOne
     private User author;
 

@@ -1,5 +1,7 @@
 package com.example.clny.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,12 +13,15 @@ public class CommentDTO {
 
     private Long id;
 
+    @NotBlank
     private String content;
 
     private Date commentDate;
 
+    @NotNull
     private UserDTO author;
 
+    @NotNull
     private PostDTO post;
 
     private CommentDTO parentComment;

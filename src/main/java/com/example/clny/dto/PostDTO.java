@@ -1,5 +1,7 @@
 package com.example.clny.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,12 +14,14 @@ public class PostDTO {
 
     private Long id;
 
+    @NotBlank
     private String content;
 
     private List<String> images;
 
     private Date postDate;
 
+    @NotNull
     private UserDTO author;
 
     private boolean edited;
