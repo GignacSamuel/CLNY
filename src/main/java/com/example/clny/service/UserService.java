@@ -6,6 +6,7 @@ import com.example.clny.mapper.UserMapper;
 import com.example.clny.model.User;
 import com.example.clny.repository.CredentialsRepository;
 import com.example.clny.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,10 +18,13 @@ public class UserService {
 
     private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, CredentialsRepository credentialsRepository, UserMapper userMapper) {
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepository, CredentialsRepository credentialsRepository, UserMapper userMapper, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.credentialsRepository = credentialsRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDTO register(UserDTO userDTO) throws Exception {
@@ -32,7 +36,8 @@ public class UserService {
             throw new EmailAlreadyInUseException();
         }
 
-        // TODO : password hash
+        String encodedPassword = passwordEncoder.encode(userDTO.getCredentials().getPassword());
+        userDTO.getCredentials().setPassword(encodedPassword);
 
         User user = userMapper.userDTOToUser(userDTO);
         return userMapper.userToUserDTO(userRepository.save(user));
