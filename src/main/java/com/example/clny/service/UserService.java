@@ -1,7 +1,10 @@
 package com.example.clny.service;
 
+import com.example.clny.dto.CredentialsDTO;
 import com.example.clny.dto.UserDTO;
 import com.example.clny.exception.custom.EmailAlreadyInUseException;
+import com.example.clny.exception.custom.NoAccountAssociatedWithEmailException;
+import com.example.clny.exception.custom.WrongPasswordException;
 import com.example.clny.mapper.UserMapper;
 import com.example.clny.model.User;
 import com.example.clny.repository.CredentialsRepository;
@@ -41,6 +44,24 @@ public class UserService {
 
         User user = userMapper.userDTOToUser(userDTO);
         return userMapper.userToUserDTO(userRepository.save(user));
+    }
+
+    public UserDTO login(CredentialsDTO credentialsDTO) throws Exception {
+        if(credentialsDTO == null) {
+            throw new IllegalArgumentException("param credentialsDTO cannot be null.");
+        }
+
+        if(!credentialsRepository.existsByEmail(credentialsDTO.getEmail())) {
+            throw new NoAccountAssociatedWithEmailException();
+        }
+
+        User user = userRepository.findByCredentialsEmail(credentialsDTO.getEmail());
+
+        if(!passwordEncoder.matches(credentialsDTO.getPassword(), user.getCredentials().getPassword())) {
+            throw new WrongPasswordException();
+        }
+
+        return userMapper.userToUserDTO(user);
     }
 
 }
