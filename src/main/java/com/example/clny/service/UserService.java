@@ -6,9 +6,12 @@ import com.example.clny.exception.custom.EmailAlreadyInUseException;
 import com.example.clny.exception.custom.NoAccountAssociatedWithEmailException;
 import com.example.clny.exception.custom.WrongPasswordException;
 import com.example.clny.mapper.UserMapper;
+import com.example.clny.model.AuthenticationResponse;
 import com.example.clny.model.User;
 import com.example.clny.repository.CredentialsRepository;
 import com.example.clny.repository.UserRepository;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +26,20 @@ public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, CredentialsRepository credentialsRepository, UserMapper userMapper, BCryptPasswordEncoder passwordEncoder) {
+    private final JwtService jwtService;
+
+    private final AuthenticationManager authenticationManager;
+
+    public UserService(UserRepository userRepository, CredentialsRepository credentialsRepository, UserMapper userMapper, BCryptPasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.credentialsRepository = credentialsRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
     }
 
-    public UserDTO register(UserDTO userDTO) throws Exception {
+    public AuthenticationResponse register(UserDTO userDTO) throws Exception {
         if(userDTO == null) {
             throw new IllegalArgumentException("param userDTO cannot be null.");
         }
@@ -43,10 +52,14 @@ public class UserService {
         userDTO.getCredentials().setPassword(encodedPassword);
 
         User user = userMapper.userDTOToUser(userDTO);
-        return userMapper.userToUserDTO(userRepository.save(user));
+        userRepository.save(user);
+
+        String token = jwtService.generateToken(user);
+
+        return new AuthenticationResponse(token);
     }
 
-    public UserDTO login(CredentialsDTO credentialsDTO) throws Exception {
+    public AuthenticationResponse login(CredentialsDTO credentialsDTO) throws Exception {
         if(credentialsDTO == null) {
             throw new IllegalArgumentException("param credentialsDTO cannot be null.");
         }
@@ -55,13 +68,22 @@ public class UserService {
             throw new NoAccountAssociatedWithEmailException();
         }
 
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        credentialsDTO.getEmail(),
+                        credentialsDTO.getPassword()
+                )
+        );
+
         User user = userRepository.findByCredentialsEmail(credentialsDTO.getEmail());
 
         if(!passwordEncoder.matches(credentialsDTO.getPassword(), user.getCredentials().getPassword())) {
             throw new WrongPasswordException();
         }
 
-        return userMapper.userToUserDTO(user);
+        String token = jwtService.generateToken(user);
+
+        return new AuthenticationResponse(token);
     }
 
 }
