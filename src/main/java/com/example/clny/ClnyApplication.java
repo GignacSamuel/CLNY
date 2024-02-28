@@ -44,6 +44,19 @@ public class ClnyApplication implements CommandLineRunner {
 
 		UserDTO authenticatedUser = userService.login(credentialsDTO);
 		System.out.println(authenticatedUser);
+
+		// email already in use
+		// userService.register(userDTO);
+
+		// no account
+		// Credentials credentials2 = new Credentials("noaccount@gmail.com","password");
+		// CredentialsDTO credentialsDTO2 = credentialsMapper.credentialsToCredentialsDTO(credentials2);
+		// userService.login(credentialsDTO2);
+
+		// wrong password
+		// Credentials credentials3 = new Credentials("alibaba@gmail.com","wrongpassword");
+		// CredentialsDTO credentialsDTO3 = credentialsMapper.credentialsToCredentialsDTO(credentials3);
+		// userService.login(credentialsDTO3);
 	}
 
 }
