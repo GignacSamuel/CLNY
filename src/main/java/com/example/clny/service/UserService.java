@@ -12,6 +12,7 @@ import com.example.clny.repository.CredentialsRepository;
 import com.example.clny.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,11 +53,11 @@ public class UserService {
         userDTO.getCredentials().setPassword(encodedPassword);
 
         User user = userMapper.userDTOToUser(userDTO);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         String token = jwtService.generateToken(user);
 
-        return new AuthenticationResponse(token);
+        return new AuthenticationResponse(token, userMapper.userToUserDTO(savedUser));
     }
 
     public AuthenticationResponse login(CredentialsDTO credentialsDTO) throws Exception {
@@ -68,22 +69,22 @@ public class UserService {
             throw new NoAccountAssociatedWithEmailException();
         }
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        credentialsDTO.getEmail(),
-                        credentialsDTO.getPassword()
-                )
-        );
-
-        User user = userRepository.findByCredentialsEmail(credentialsDTO.getEmail());
-
-        if(!passwordEncoder.matches(credentialsDTO.getPassword(), user.getCredentials().getPassword())) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            credentialsDTO.getEmail(),
+                            credentialsDTO.getPassword()
+                    )
+            );
+        } catch (AuthenticationException e) {
             throw new WrongPasswordException();
         }
 
+        User user = userRepository.findByCredentialsEmail(credentialsDTO.getEmail());
+
         String token = jwtService.generateToken(user);
 
-        return new AuthenticationResponse(token);
+        return new AuthenticationResponse(token, userMapper.userToUserDTO(user));
     }
 
 }
