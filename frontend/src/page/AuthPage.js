@@ -14,10 +14,13 @@ import {
     FormLabel,
     FormMessage,
 } from "../components/ui/form"
+import { Toaster } from "../components/ui/toaster"
+import { useToast } from "../components/ui/use-toast"
 
 function AuthPage() {
     const [backgroundUrl, setBackgroundUrl] = useState('');
     const [backgroundOpacity, setBackgroundOpacity] = useState(0);
+    const { toast } = useToast()
 
     const loginFormSchema = z.object({
         email: z.string().email({ message: "Invalid email address" }),
@@ -49,7 +52,32 @@ function AuthPage() {
                 email: values.email,
                 password: values.password
             }
-            console.log(credentialsDTO)
+
+            fetch("/user/login", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(credentialsDTO),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.message || 'Unknown error');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: error.message,
+                    })
+                });
         }
 
         return (
@@ -110,7 +138,32 @@ function AuthPage() {
                 },
                 profile: {},
             }
-            console.log(userDTO)
+
+            fetch("/user/register", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userDTO),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.message || 'Unknown error');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: error.message,
+                    })
+                });
         }
 
         return (
@@ -218,6 +271,7 @@ function AuthPage() {
                     </Tabs>
                 </div>
             </div>
+            <Toaster />
         </div>
     );
 }
