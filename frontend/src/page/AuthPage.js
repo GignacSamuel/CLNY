@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { createClient } from 'pexels';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { z } from "zod"
@@ -16,11 +16,15 @@ import {
 } from "../components/ui/form"
 import { Toaster } from "../components/ui/toaster"
 import { useToast } from "../components/ui/use-toast"
+import {AuthContext} from "../context/AuthContext";
+import {useNavigate} from "react-router-dom";
 
 function AuthPage() {
     const [backgroundUrl, setBackgroundUrl] = useState('');
     const [backgroundOpacity, setBackgroundOpacity] = useState(0);
     const { toast } = useToast()
+    const { setUser, setToken } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const loginFormSchema = z.object({
         email: z.string().email({ message: "Invalid email address" }),
@@ -69,7 +73,9 @@ function AuthPage() {
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data);
+                    setUser(data.userDTO);
+                    setToken(data.token);
+                    navigate('/home');
                 })
                 .catch(error => {
                     toast({
@@ -155,7 +161,9 @@ function AuthPage() {
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data);
+                    setUser(data.userDTO);
+                    setToken(data.token);
+                    navigate('/home');
                 })
                 .catch(error => {
                     toast({
