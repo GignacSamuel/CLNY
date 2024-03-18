@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthPage from "./page/AuthPage";
 import HomePage from "./page/HomePage";
+import ProfilePage from "./page/ProfilePage";
 import {AuthContextProvider} from "./context/AuthContext";
 import PrivateRoute from "./util/PrivateRoute";
 
@@ -12,6 +13,7 @@ function App() {
                   <Route path="/" element={<AuthPage/>}/>
                   <Route element={<PrivateRoute />}>
                       <Route path="/home" element={<HomePage />} />
+                      <Route path="/profile" element={<ProfilePage />} />
                   </Route>
               </Routes>
           </BrowserRouter>

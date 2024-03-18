@@ -5,9 +5,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 
-function HomePage() {
+function ProfilePage() {
     const navigate = useNavigate();
-    const { logout } = useContext(AuthContext);
+    const { logout, user } = useContext(AuthContext);
 
     const handleLogout = () => {
         logout();
@@ -47,11 +47,48 @@ function HomePage() {
 
     const Body = () => {
         return (
-            <div className="grid grid-cols-4 gap-4">
-                <div className="col-span-1">left</div>
-                <div className="col-span-2">middle</div>
-                <div className="col-span-1">right</div>
+            <div className="grid grid-cols-4">
+                <div className="col-span-1">
+                    <Left/>
+                </div>
+                <div className="col-span-2">
+                    <Profile/>
+                </div>
+                <div className="col-span-1">
+                    <Right/>
+                </div>
             </div>
+        );
+    }
+
+    const Profile = () => {
+        return (
+            <div className="bg-slate-100 m-6 p-6">
+                <div className="bg-cover bg-center bg-slate-200 h-64">
+                    <div className="relative h-full flex items-end justify-start p-6">
+                        <Avatar className="border-4 border-white rounded-full w-32 h-32">
+                            <AvatarImage src="https://github.com/shadcn.png"/>
+                            <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                    </div>
+                </div>
+                <div className="pt-6">
+                    <p className="text-2xl font-semibold">{user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : 'User Name'}</p>
+                    <p className="text-gray-600">{user.profile.biography ? `${user.profile.biography}` : 'Bio.'}</p>
+                </div>
+            </div>
+        );
+    }
+
+    const Left = () => {
+        return (
+            <div className="bg-slate-100 m-6 p-6">Left</div>
+        );
+    }
+
+    const Right = () => {
+        return (
+            <div className="bg-slate-100 m-6 p-6">Right</div>
         );
     }
 
@@ -63,4 +100,4 @@ function HomePage() {
     );
 }
 
-export default HomePage;
+export default ProfilePage;
