@@ -5,10 +5,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 import { Pencil } from 'lucide-react';
+import { useToast } from "../components/ui/use-toast"
 
 function ProfilePage() {
     const navigate = useNavigate();
-    const { logout, user } = useContext(AuthContext);
+    const { logout, user, token, setUser } = useContext(AuthContext);
+    const { toast } = useToast()
 
     const handleLogout = () => {
         logout();
@@ -21,7 +23,39 @@ function ProfilePage() {
 
     const handleProfilePicChange = (event) => {
         const file = event.target.files[0];
-        console.log(file);
+
+        if (!file) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch(`/user/updateProfilePicture/${user.id}`, {
+            method: 'PUT',
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                setUser(data);
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                })
+            });
     };
 
     const handleBannerPicChange = (event) => {
@@ -44,7 +78,7 @@ function ProfilePage() {
                     </div>
                     <div className="mr-2 cursor-pointer" onClick={handleProfileClick}>
                         <Avatar>
-                            <AvatarImage src="https://github.com/shadcn.png"/>
+                            <AvatarImage src={user.profile.profilePicture || "https://github.com/shadcn.png"}/>
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                     </div>
@@ -85,7 +119,7 @@ function ProfilePage() {
                     <div className="absolute bottom-0 left-0 p-6">
                         <div className="relative group">
                             <Avatar className="border-4 border-white rounded-full w-32 h-32">
-                                <AvatarImage src="https://github.com/shadcn.png"/>
+                                <AvatarImage src={user.profile.profilePicture || "https://github.com/shadcn.png"}/>
                                 <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                             <label htmlFor="profile-pic" className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300">

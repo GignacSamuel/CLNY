@@ -1,6 +1,7 @@
 package com.example.clny.exception;
 
 import com.example.clny.exception.custom.EmailAlreadyInUseException;
+import com.example.clny.exception.custom.EmptyFileException;
 import com.example.clny.exception.custom.NoAccountAssociatedWithEmailException;
 import com.example.clny.exception.custom.WrongPasswordException;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(WrongPasswordException.class)
     public ResponseEntity<ErrorResponse> handleWrongPasswordException() {
         ErrorResponse errorResponse = new ErrorResponse("Wrong password. Please try again.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmptyFileException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyFileException() {
+        ErrorResponse errorResponse = new ErrorResponse("No file provided. Please provide a file.");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
