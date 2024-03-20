@@ -1,9 +1,6 @@
 package com.example.clny.exception;
 
-import com.example.clny.exception.custom.EmailAlreadyInUseException;
-import com.example.clny.exception.custom.EmptyFileException;
-import com.example.clny.exception.custom.NoAccountAssociatedWithEmailException;
-import com.example.clny.exception.custom.WrongPasswordException;
+import com.example.clny.exception.custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,6 +31,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EmptyFileException.class)
     public ResponseEntity<ErrorResponse> handleEmptyFileException() {
         ErrorResponse errorResponse = new ErrorResponse("No file provided. Please provide a file.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FileNotImageException.class)
+    public ResponseEntity<ErrorResponse> handleFileNotImageException() {
+        ErrorResponse errorResponse = new ErrorResponse("Provided file is not a valid image.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FileTooLargeException.class)
+    public ResponseEntity<ErrorResponse> handleFileTooLargeException() {
+        ErrorResponse errorResponse = new ErrorResponse("Provided file is too large. Max image size is 10MB.");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

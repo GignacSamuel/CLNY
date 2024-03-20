@@ -2,10 +2,7 @@ package com.example.clny.service;
 
 import com.example.clny.dto.CredentialsDTO;
 import com.example.clny.dto.UserDTO;
-import com.example.clny.exception.custom.EmailAlreadyInUseException;
-import com.example.clny.exception.custom.EmptyFileException;
-import com.example.clny.exception.custom.NoAccountAssociatedWithEmailException;
-import com.example.clny.exception.custom.WrongPasswordException;
+import com.example.clny.exception.custom.*;
 import com.example.clny.mapper.UserMapper;
 import com.example.clny.model.AuthenticationResponse;
 import com.example.clny.model.User;
@@ -18,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -101,6 +99,9 @@ public class UserService {
     public UserDTO updateProfilePicture(Long userId, MultipartFile file) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("no user with id : " + userId));
         String webPath = processFileUpload(file, PROFILE_PICTURE_DIRECTORY);
+
+        deletePreviousProfilePicture(user);
+
         user.getProfile().setProfilePicture(webPath);
         return userMapper.userToUserDTO(userRepository.save(user));
     }
@@ -108,6 +109,9 @@ public class UserService {
     public UserDTO updateBannerPicture(Long userId, MultipartFile file) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("no user with id : " + userId));
         String webPath = processFileUpload(file, BANNER_PICTURE_DIRECTORY);
+
+        deletePreviousBannerPicture(user);
+
         user.getProfile().setBannerPicture(webPath);
         return userMapper.userToUserDTO(userRepository.save(user));
     }
@@ -115,6 +119,16 @@ public class UserService {
     private String processFileUpload(MultipartFile file, Path directory) throws Exception {
         if (file.isEmpty()) {
             throw new EmptyFileException();
+        }
+
+        String mimeType = file.getContentType();
+        if (mimeType == null || !mimeType.startsWith("image/")) {
+            throw new FileNotImageException();
+        }
+
+        long maxFileSize = 10 * 1024 * 1024; // 10MB
+        if (file.getSize() > maxFileSize) {
+            throw new FileTooLargeException();
         }
 
         String fileName = file.getOriginalFilename();
@@ -129,6 +143,24 @@ public class UserService {
 
     private String getWebPath(Path storePath) {
         return storePath.toString().substring(storePath.toString().indexOf("/uploads"));
+    }
+
+    private void deletePreviousProfilePicture(User user) {
+        String webPath = user.getProfile().getProfilePicture();
+        deleteFileAtPath(webPath, PROFILE_PICTURE_DIRECTORY);
+    }
+
+    private void deletePreviousBannerPicture(User user) {
+        String webPath = user.getProfile().getBannerPicture();
+        deleteFileAtPath(webPath, BANNER_PICTURE_DIRECTORY);
+    }
+
+    private void deleteFileAtPath(String webPath, Path directory) {
+        if (webPath != null && !webPath.isEmpty()) {
+            String fileName = webPath.substring(webPath.lastIndexOf('/') + 1);
+            File fileToDelete = directory.resolve(fileName).toFile();
+            fileToDelete.delete();
+        }
     }
 
 }

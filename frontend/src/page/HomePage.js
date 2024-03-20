@@ -33,7 +33,7 @@ function HomePage() {
                     </div>
                     <div className="mr-2 cursor-pointer" onClick={handleProfileClick}>
                         <Avatar>
-                            <AvatarImage src={user.profile.profilePicture || "https://github.com/shadcn.png"}/>
+                            <AvatarImage src={user.profile.profilePicture || "/profile_picture_placeholder.jpg"}/>
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                     </div>

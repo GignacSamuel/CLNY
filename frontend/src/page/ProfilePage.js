@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 import { Pencil } from 'lucide-react';
+import { Toaster } from "../components/ui/toaster"
 import { useToast } from "../components/ui/use-toast"
 
 function ProfilePage() {
@@ -110,7 +111,7 @@ function ProfilePage() {
                     </div>
                     <div className="mr-2 cursor-pointer" onClick={handleProfileClick}>
                         <Avatar>
-                            <AvatarImage src={user.profile.profilePicture || "https://github.com/shadcn.png"}/>
+                            <AvatarImage src={user.profile.profilePicture || "/profile_picture_placeholder.jpg"}/>
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                     </div>
@@ -141,7 +142,7 @@ function ProfilePage() {
     const Profile = () => {
         return (
             <div className="bg-slate-100 m-6 p-6">
-                <div className="relative bg-cover bg-center bg-slate-200 h-64" style={{backgroundImage: `url(${user.profile.bannerPicture || 'default-banner-url'})`,}}>
+                <div className="relative bg-cover bg-center bg-slate-200 h-64" style={{backgroundImage: `url(${user.profile.bannerPicture || "/banner_picture_placeholder.png"})`,}}>
                     <input id="banner-pic" type="file" accept="image/*" onChange={handleBannerPicChange} className="hidden" />
                     <label htmlFor="banner-pic" className="absolute bottom-0 right-0 m-4 cursor-pointer">
                         <div className="p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-75 transition-opacity duration-300">
@@ -151,7 +152,7 @@ function ProfilePage() {
                     <div className="absolute bottom-0 left-0 p-6">
                         <div className="relative group">
                             <Avatar className="border-4 border-white rounded-full w-32 h-32">
-                                <AvatarImage src={user.profile.profilePicture || "https://github.com/shadcn.png"}/>
+                                <AvatarImage src={user.profile.profilePicture || "/profile_picture_placeholder.jpg"}/>
                                 <AvatarFallback>CN</AvatarFallback>
                             </Avatar>
                             <label htmlFor="profile-pic" className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -185,6 +186,7 @@ function ProfilePage() {
         <div>
             <Header/>
             <Body/>
+            <Toaster />
         </div>
     );
 }
