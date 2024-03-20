@@ -60,7 +60,39 @@ function ProfilePage() {
 
     const handleBannerPicChange = (event) => {
         const file = event.target.files[0];
-        console.log(file);
+
+        if (!file) {
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch(`/user/updateBannerPicture/${user.id}`, {
+            method: 'PUT',
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                setUser(data);
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                })
+            });
     };
 
     const Header = () => {
@@ -109,7 +141,7 @@ function ProfilePage() {
     const Profile = () => {
         return (
             <div className="bg-slate-100 m-6 p-6">
-                <div className="relative bg-cover bg-center bg-slate-200 h-64">
+                <div className="relative bg-cover bg-center bg-slate-200 h-64" style={{backgroundImage: `url(${user.profile.bannerPicture || 'default-banner-url'})`,}}>
                     <input id="banner-pic" type="file" accept="image/*" onChange={handleBannerPicChange} className="hidden" />
                     <label htmlFor="banner-pic" className="absolute bottom-0 right-0 m-4 cursor-pointer">
                         <div className="p-2 bg-black bg-opacity-50 rounded-full hover:bg-opacity-75 transition-opacity duration-300">

@@ -34,4 +34,9 @@ public class UserController {
         return ResponseEntity.ok(userService.updateProfilePicture(userId, file));
     }
 
+    @PutMapping("/updateBannerPicture/{userId}")
+    public ResponseEntity<UserDTO> updateBannerPicture(@PathVariable Long userId, @RequestParam("file") MultipartFile file) throws Exception {
+        return ResponseEntity.ok(userService.updateBannerPicture(userId, file));
+    }
+
 }

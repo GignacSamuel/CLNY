@@ -7,7 +7,7 @@ import {AuthContext} from "../context/AuthContext";
 
 function HomePage() {
     const navigate = useNavigate();
-    const { logout } = useContext(AuthContext);
+    const { logout, user } = useContext(AuthContext);
 
     const handleLogout = () => {
         logout();
@@ -33,7 +33,7 @@ function HomePage() {
                     </div>
                     <div className="mr-2 cursor-pointer" onClick={handleProfileClick}>
                         <Avatar>
-                            <AvatarImage src="https://github.com/shadcn.png"/>
+                            <AvatarImage src={user.profile.profilePicture || "https://github.com/shadcn.png"}/>
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                     </div>

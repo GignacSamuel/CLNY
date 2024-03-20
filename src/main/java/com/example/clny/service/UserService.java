@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -37,7 +38,9 @@ public class UserService {
 
     private final AuthenticationManager authenticationManager;
 
-    private static final String PROFILE_PICTURE_DIRECTORY = System.getProperty("user.dir") + "/frontend/public/uploads/profile-pictures/";
+    private static final Path PROFILE_PICTURE_DIRECTORY = Paths.get(System.getProperty("user.dir"), "frontend", "public", "uploads", "profile-pictures");
+
+    private static final Path BANNER_PICTURE_DIRECTORY = Paths.get(System.getProperty("user.dir"), "frontend", "public", "uploads", "banner-pictures");
 
     public UserService(UserRepository userRepository, CredentialsRepository credentialsRepository, UserMapper userMapper, BCryptPasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
@@ -96,28 +99,36 @@ public class UserService {
     }
 
     public UserDTO updateProfilePicture(Long userId, MultipartFile file) throws Exception {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("no user with id " + userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("no user with id : " + userId));
+        String webPath = processFileUpload(file, PROFILE_PICTURE_DIRECTORY);
+        user.getProfile().setProfilePicture(webPath);
+        return userMapper.userToUserDTO(userRepository.save(user));
+    }
 
-        // TODO : delete previous pfp
+    public UserDTO updateBannerPicture(Long userId, MultipartFile file) throws Exception {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("no user with id : " + userId));
+        String webPath = processFileUpload(file, BANNER_PICTURE_DIRECTORY);
+        user.getProfile().setBannerPicture(webPath);
+        return userMapper.userToUserDTO(userRepository.save(user));
+    }
 
-        if(file.isEmpty()) {
+    private String processFileUpload(MultipartFile file, Path directory) throws Exception {
+        if (file.isEmpty()) {
             throw new EmptyFileException();
         }
 
-        Path storageDirectory = Paths.get(PROFILE_PICTURE_DIRECTORY);
+        String fileName = file.getOriginalFilename();
+        String fileType = fileName.substring(fileName.lastIndexOf("."));
+        String newFileName = UUID.randomUUID() + fileType;
 
-        String originalFileName = file.getOriginalFilename();
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-        String uniqueFileName = UUID.randomUUID() + fileExtension;
+        Path storePath = directory.resolve(newFileName);
+        file.transferTo(storePath);
 
-        Path destinationPath = storageDirectory.resolve(uniqueFileName);
-        file.transferTo(destinationPath);
+        return getWebPath(storePath);
+    }
 
-        String accessDirectory = destinationPath.toString().substring(destinationPath.toString().indexOf("/uploads"));
-
-        user.getProfile().setProfilePicture(accessDirectory);
-
-        return userMapper.userToUserDTO(userRepository.save(user));
+    private String getWebPath(Path storePath) {
+        return storePath.toString().substring(storePath.toString().indexOf("/uploads"));
     }
 
 }
