@@ -9,6 +9,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -37,6 +39,11 @@ public class UserController {
     @PutMapping("/updateBannerPicture/{userId}")
     public ResponseEntity<UserDTO> updateBannerPicture(@PathVariable Long userId, @RequestParam("file") MultipartFile file) throws Exception {
         return ResponseEntity.ok(userService.updateBannerPicture(userId, file));
+    }
+
+    @PutMapping("/updateBiography/{userId}")
+    public ResponseEntity<UserDTO> updateBiography(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) throws Exception {
+        return ResponseEntity.ok(userService.updateBiography(userId, requestBody.get("newBiography")));
     }
 
 }

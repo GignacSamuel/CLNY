@@ -46,4 +46,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EmptyBiographyException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyBiographyException() {
+        ErrorResponse errorResponse = new ErrorResponse("Biography section cannot be empty.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BiographyTooLongException.class)
+    public ResponseEntity<ErrorResponse> handleBiographyTooLongException() {
+        ErrorResponse errorResponse = new ErrorResponse("Biography length cannot exceed 150 characters.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }

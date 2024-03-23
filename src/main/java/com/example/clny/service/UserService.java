@@ -163,4 +163,19 @@ public class UserService {
         }
     }
 
+    public UserDTO updateBiography(Long userId, String newBiography) throws Exception {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("no user with id : " + userId));
+
+        if (newBiography == null || newBiography.trim().isEmpty()) {
+            throw new EmptyBiographyException();
+        }
+
+        if (newBiography.length() > 150) {
+            throw new BiographyTooLongException();
+        }
+
+        user.getProfile().setBiography(newBiography);
+        return userMapper.userToUserDTO(userRepository.save(user));
+    }
+
 }
