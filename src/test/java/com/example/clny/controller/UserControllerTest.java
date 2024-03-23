@@ -24,11 +24,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import java.util.Collections;
+
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -296,6 +296,61 @@ public class UserControllerTest {
                             request.setMethod("PUT");
                             return request;
                         }))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateBiography_HappyPath() throws Exception {
+        // Arrange
+        Long userId = 1L;
+        String newBio = "a new bio";
+
+        CredentialsDTO credentialsDTO = new CredentialsDTO("email@gmail.com","password");
+        ProfileDTO profileDTO = new ProfileDTO("profilePicture","bannerPicture",newBio);
+        UserDTO userDTO = new UserDTO("firstName","lastName",credentialsDTO,profileDTO);
+
+        when(userService.updateBiography(eq(userId), anyString())).thenReturn(userDTO);
+
+        String payload = String.format("{\"newBiography\": \"%s\"}", newBio);
+
+        // Act and Assert
+        mockMvc.perform(put("/user/updateBiography/{userId}", userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void updateBiography_EmptyBiography() throws Exception {
+        // Arrange
+        Long userId = 1L;
+        String newBio = ""; //empty
+
+        when(userService.updateBiography(eq(userId), anyString())).thenThrow(EmptyBiographyException.class);
+
+        String payload = String.format("{\"newBiography\": \"%s\"}", newBio);
+
+        // Act and Assert
+        mockMvc.perform(put("/user/updateBiography/{userId}", userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateBiography_BiographyTooLong() throws Exception {
+        // Arrange
+        Long userId = 1L;
+        String newBio = String.join("", Collections.nCopies(16, "1234567890")); // 160 characters
+
+        when(userService.updateBiography(eq(userId), anyString())).thenThrow(BiographyTooLongException.class);
+
+        String payload = String.format("{\"newBiography\": \"%s\"}", newBio);
+
+        // Act and Assert
+        mockMvc.perform(put("/user/updateBiography/{userId}", userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
                 .andExpect(status().isBadRequest());
     }
 

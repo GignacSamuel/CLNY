@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -388,6 +389,80 @@ public class UserServiceTest {
         assertThrows(FileTooLargeException.class, () -> {
             userService.updateBannerPicture(userId, file);
         }, "Expected updateBannerPicture() to throw FileTooLargeException, but it didn't");
+    }
+
+    @Test
+    void updateBiography_HappyPath() throws Exception {
+        // Arrange
+        Long userId = 1L;
+        String newBio = "a new bio";
+
+        Credentials credentials = new Credentials("email@gmail.com","password");
+        Profile profile = new Profile("profilePicture","bannerPicture","bio");
+        User user = new User("firstName","lastName",credentials,profile);
+
+        CredentialsDTO credentialsDTO = new CredentialsDTO("email@gmail.com","password");
+        ProfileDTO profileDTO = new ProfileDTO("profilePicture","bannerPicture",newBio);
+        UserDTO userDTO = new UserDTO("firstName","lastName",credentialsDTO,profileDTO);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userMapper.userToUserDTO(any(User.class))).thenReturn(userDTO);
+
+        // Act
+        UserDTO result = userService.updateBiography(userId, newBio);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(newBio, result.getProfile().getBiography());
+    }
+
+    @Test
+    void updateBiography_UserDoesNotExist() {
+        // Arrange
+        Long userId = 1L;
+        String newBio = "a new bio";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            userService.updateBiography(userId, newBio);
+        }, "Expected updateBiography() to throw IllegalArgumentException, but it didn't");
+    }
+
+    @Test
+    void updateBiography_EmptyBiography() {
+        // Arrange
+        Long userId = 1L;
+        String newBio = ""; //empty
+
+        Credentials credentials = new Credentials("email@gmail.com","password");
+        Profile profile = new Profile("profilePicture","bannerPicture","bio");
+        User user = new User("firstName","lastName",credentials,profile);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        // Act and Assert
+        assertThrows(EmptyBiographyException.class, () -> {
+            userService.updateBiography(userId, newBio);
+        }, "Expected updateBiography() to throw EmptyBiographyException, but it didn't");
+    }
+
+    @Test
+    void updateBiography_BiographyTooLong() {
+        // Arrange
+        Long userId = 1L;
+        String newBio = String.join("", Collections.nCopies(16, "1234567890")); // 160 characters
+
+        Credentials credentials = new Credentials("email@gmail.com","password");
+        Profile profile = new Profile("profilePicture","bannerPicture","bio");
+        User user = new User("firstName","lastName",credentials,profile);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        // Act and Assert
+        assertThrows(BiographyTooLongException.class, () -> {
+            userService.updateBiography(userId, newBio);
+        }, "Expected updateBiography() to throw BiographyTooLongException, but it didn't");
     }
 
 }
