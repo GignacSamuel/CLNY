@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -44,6 +45,11 @@ public class UserController {
     @PutMapping("/updateBiography/{userId}")
     public ResponseEntity<UserDTO> updateBiography(@PathVariable Long userId, @RequestBody Map<String, String> requestBody) throws Exception {
         return ResponseEntity.ok(userService.updateBiography(userId, requestBody.get("newBiography")));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<UserDTO>> searchUser(@RequestBody Map<String, String> requestBody) throws Exception {
+        return ResponseEntity.ok(userService.searchUser(requestBody.get("searchString")));
     }
 
 }

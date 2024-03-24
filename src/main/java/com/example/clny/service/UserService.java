@@ -19,7 +19,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -176,6 +178,17 @@ public class UserService {
 
         user.getProfile().setBiography(newBiography);
         return userMapper.userToUserDTO(userRepository.save(user));
+    }
+
+    public List<UserDTO> searchUser(String searchString) throws Exception {
+        if (searchString == null || searchString.trim().isEmpty()) {
+            throw new EmptySearchStringException();
+        }
+
+        List<User> users = userRepository.searchByNameOrEmail(searchString);
+        return users.stream()
+                .map(userMapper::userToUserDTO)
+                .collect(Collectors.toList());
     }
 
 }

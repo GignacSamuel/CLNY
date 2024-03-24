@@ -58,4 +58,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EmptySearchStringException.class)
+    public ResponseEntity<ErrorResponse> handleEmptySearchStringException() {
+        ErrorResponse errorResponse = new ErrorResponse("Search string cannot be empty.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }

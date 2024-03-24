@@ -1,13 +1,14 @@
 import {Input} from "../components/ui/input";
 import {Button} from "../components/ui/button";
 import {Avatar, AvatarFallback, AvatarImage} from "../components/ui/avatar";
-import React, {useContext} from "react";
+import React, {useContext, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 
 function Header() {
     const navigate = useNavigate();
-    const { logout, user } = useContext(AuthContext);
+    const { logout, user, token } = useContext(AuthContext);
+    const searchRef = useRef(null);
 
     const handleLogout = () => {
         logout();
@@ -18,6 +19,33 @@ function Header() {
         navigate('/profile');
     };
 
+    const handleUserSearch = () => {
+        const searchString = searchRef.current.value;
+
+        fetch(`/user/search`, {
+            method: 'POST',
+            body: JSON.stringify({ searchString: searchString }),
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data)
+            })
+            .catch(error => {
+                console.log(error)
+            });
+    };
+
     return (
         <nav className="flex items-center justify-between flex-wrap bg-slate-100 p-6">
             <div className="flex items-center flex-shrink-0 mr-6">
@@ -26,8 +54,11 @@ function Header() {
             <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                 <div className="lg:flex-grow">
                     <div className="flex w-full max-w-sm items-center space-x-2">
-                        <Input placeholder="Search"/>
-                        <Button type="submit">Search</Button>
+                        <Input
+                            placeholder="Search for a user"
+                            ref={searchRef}
+                        />
+                        <Button type="button" onClick={handleUserSearch}>Search</Button>
                     </div>
                 </div>
                 <div className="mr-2 cursor-pointer" onClick={handleProfileClick}>
