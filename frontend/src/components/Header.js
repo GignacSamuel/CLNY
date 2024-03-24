@@ -39,7 +39,7 @@ function Header() {
                 return response.json();
             })
             .then(data => {
-                console.log(data)
+                navigate('/search', { state: { searchResults: data } });
             })
             .catch(error => {
                 console.log(error)
