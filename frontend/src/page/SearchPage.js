@@ -1,9 +1,13 @@
 import Header from "../components/Header";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import {useContext} from "react";
+import {AuthContext} from "../context/AuthContext";
 
 function SearchPage() {
     const location = useLocation();
     const searchResults = location.state?.searchResults;
+    const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
 
     const Body = () => {
         return (
@@ -29,17 +33,19 @@ function SearchPage() {
 
     const Search = () => {
         if (!searchResults || searchResults.length === 0) {
-            return (
-                <div className="bg-slate-100 m-6 p-6 text-gray-600">
-                    No results.
-                </div>
-            );
+            return <div className="bg-slate-100 m-6 p-6 text-gray-600">No results.</div>;
         }
 
         return (
             <div className="bg-slate-100 m-6 p-6">
                 {searchResults.map(result => (
-                    <div key={result.id} className="bg-white p-4 mb-4">
+                    <div key={result.id} className="bg-white p-4 mb-4 cursor-pointer" onClick={() => {
+                        if (result.id === user.id) {
+                            navigate('/profile');
+                        } else {
+                            navigate('/follow', { state: { user: result } });
+                        }
+                    }}>
                         <div className="flex items-center space-x-4">
                             <div className="w-16 h-16 relative">
                                 <img

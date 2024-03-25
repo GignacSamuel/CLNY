@@ -3,6 +3,7 @@ import AuthPage from "./page/AuthPage";
 import HomePage from "./page/HomePage";
 import ProfilePage from "./page/ProfilePage";
 import SearchPage from "./page/SearchPage";
+import FollowPage from "./page/FollowPage";
 import {AuthContextProvider} from "./context/AuthContext";
 import PrivateRoute from "./util/PrivateRoute";
 import {Toaster} from "./components/ui/toaster";
@@ -18,6 +19,7 @@ function App() {
                         <Route path="/home" element={<HomePage />} />
                         <Route path="/profile" element={<ProfilePage />} />
                         <Route path="/search" element={<SearchPage />} />
+                        <Route path="/follow" element={<FollowPage />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
