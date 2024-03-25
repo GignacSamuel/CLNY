@@ -5,22 +5,24 @@ import ProfilePage from "./page/ProfilePage";
 import SearchPage from "./page/SearchPage";
 import {AuthContextProvider} from "./context/AuthContext";
 import PrivateRoute from "./util/PrivateRoute";
+import {Toaster} from "./components/ui/toaster";
 
 function App() {
-  return (
-      <AuthContextProvider>
-          <BrowserRouter>
-              <Routes>
-                  <Route path="/" element={<AuthPage/>}/>
-                  <Route element={<PrivateRoute />}>
-                      <Route path="/home" element={<HomePage />} />
-                      <Route path="/profile" element={<ProfilePage />} />
-                      <Route path="/search" element={<SearchPage />} />
-                  </Route>
-              </Routes>
-          </BrowserRouter>
-      </AuthContextProvider>
-  );
+    return (
+        <AuthContextProvider>
+            <BrowserRouter>
+                <Toaster />
+                <Routes>
+                    <Route path="/" element={<AuthPage/>}/>
+                    <Route element={<PrivateRoute />}>
+                        <Route path="/home" element={<HomePage />} />
+                        <Route path="/profile" element={<ProfilePage />} />
+                        <Route path="/search" element={<SearchPage />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </AuthContextProvider>
+    );
 }
 
 export default App;

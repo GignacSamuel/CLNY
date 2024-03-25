@@ -4,6 +4,7 @@ import {Avatar, AvatarFallback, AvatarImage} from "../components/ui/avatar";
 import React, {useContext, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
+import { toast } from '../components/ui/use-toast';
 
 function Header() {
     const navigate = useNavigate();
@@ -42,7 +43,11 @@ function Header() {
                 navigate('/search', { state: { searchResults: data } });
             })
             .catch(error => {
-                console.log(error)
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                })
             });
     };
 

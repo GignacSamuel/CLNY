@@ -3,8 +3,7 @@ import {Button} from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 import {AuthContext} from "../context/AuthContext";
 import { Pencil } from 'lucide-react';
-import { Toaster } from "../components/ui/toaster"
-import { useToast } from "../components/ui/use-toast"
+import { toast } from '../components/ui/use-toast';
 import {
     Dialog,
     DialogContent,
@@ -18,7 +17,6 @@ import Header from "../components/Header";
 
 function ProfilePage() {
     const { user, token, setUser } = useContext(AuthContext);
-    const { toast } = useToast()
     const bioRef = useRef(null);
 
     const handleProfilePicChange = (event) => {
@@ -215,7 +213,6 @@ function ProfilePage() {
         <div>
             <Header/>
             <Body/>
-            <Toaster/>
         </div>
     );
 }

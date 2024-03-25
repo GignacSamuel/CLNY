@@ -14,15 +14,13 @@ import {
     FormLabel,
     FormMessage,
 } from "../components/ui/form"
-import { Toaster } from "../components/ui/toaster"
-import { useToast } from "../components/ui/use-toast"
+import { toast } from '../components/ui/use-toast';
 import {AuthContext} from "../context/AuthContext";
 import {useNavigate} from "react-router-dom";
 
 function AuthPage() {
     const [backgroundUrl, setBackgroundUrl] = useState('');
     const [backgroundOpacity, setBackgroundOpacity] = useState(0);
-    const { toast } = useToast()
     const { setUser, setToken } = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -279,7 +277,6 @@ function AuthPage() {
                     </Tabs>
                 </div>
             </div>
-            <Toaster />
         </div>
     );
 }

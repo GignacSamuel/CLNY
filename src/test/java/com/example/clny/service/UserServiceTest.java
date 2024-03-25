@@ -23,7 +23,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -463,6 +465,53 @@ public class UserServiceTest {
         assertThrows(BiographyTooLongException.class, () -> {
             userService.updateBiography(userId, newBio);
         }, "Expected updateBiography() to throw BiographyTooLongException, but it didn't");
+    }
+
+    @Test
+    void searchUserTest_HappyPath() throws Exception {
+        // Arrange
+        String searchString = "Doe";
+
+        Credentials credentials1 = new Credentials("email@gmail.com","password");
+        Profile profile1 = new Profile("profilePicture","bannerPicture","bio");
+        User user1 = new User("John","Doe",credentials1,profile1);
+
+        Credentials credentials2 = new Credentials("email@gmail.com","password");
+        Profile profile2 = new Profile("profilePicture","bannerPicture","bio");
+        User user2 = new User("Jane","Doe",credentials2,profile2);
+
+        CredentialsDTO credentialsDTO1 = new CredentialsDTO("email@gmail.com","password");
+        ProfileDTO profileDTO1 = new ProfileDTO("profilePicture","bannerPicture","bio");
+        UserDTO userDTO1 = new UserDTO("John","Doe",credentialsDTO1,profileDTO1);
+
+        CredentialsDTO credentialsDTO2 = new CredentialsDTO("email@gmail.com","password");
+        ProfileDTO profileDTO2 = new ProfileDTO("profilePicture","bannerPicture","bio");
+        UserDTO userDTO2 = new UserDTO("Jane","Doe",credentialsDTO2,profileDTO2);
+
+        List<User> users = Arrays.asList(user1, user2);
+        List<UserDTO> userDTOS = Arrays.asList(userDTO1, userDTO2);
+
+        when(userRepository.searchByNameOrEmail(anyString())).thenReturn(users);
+        when(userMapper.userToUserDTO(user1)).thenReturn(userDTO1);
+        when(userMapper.userToUserDTO(user2)).thenReturn(userDTO2);
+
+        // Act
+        List<UserDTO> result = userService.searchUser(searchString);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(result, userDTOS);
+    }
+
+    @Test
+    void searchUserTest_EmptySearchString() {
+        // Arrange
+        String searchString = ""; //empty
+
+        // Act and Assert
+        assertThrows(EmptySearchStringException.class, () -> {
+            userService.searchUser(searchString);
+        }, "Expected searchUser() to throw EmptySearchStringException, but it didn't");
     }
 
 }

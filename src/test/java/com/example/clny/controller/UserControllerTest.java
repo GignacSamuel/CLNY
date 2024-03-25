@@ -24,7 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -349,6 +351,48 @@ public class UserControllerTest {
 
         // Act and Assert
         mockMvc.perform(put("/user/updateBiography/{userId}", userId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void searchUserTest_HappyPath() throws Exception {
+        // Arrange
+        String searchString = "Doe";
+
+        CredentialsDTO credentialsDTO1 = new CredentialsDTO("email@gmail.com","password");
+        ProfileDTO profileDTO1 = new ProfileDTO("profilePicture","bannerPicture","bio");
+        UserDTO userDTO1 = new UserDTO("John","Doe",credentialsDTO1,profileDTO1);
+
+        CredentialsDTO credentialsDTO2 = new CredentialsDTO("email@gmail.com","password");
+        ProfileDTO profileDTO2 = new ProfileDTO("profilePicture","bannerPicture","bio");
+        UserDTO userDTO2 = new UserDTO("Jane","Doe",credentialsDTO2,profileDTO2);
+
+        List<UserDTO> userDTOS = Arrays.asList(userDTO1, userDTO2);
+
+        when(userService.searchUser(anyString())).thenReturn(userDTOS);
+
+        String payload = String.format("{\"searchString\": \"%s\"}", searchString);
+
+        // Act and Assert
+        mockMvc.perform(post("/user/search")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payload))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void searchUserTest_EmptySearchString() throws Exception {
+        // Arrange
+        String searchString = ""; //empty
+
+        when(userService.searchUser(anyString())).thenThrow(EmptySearchStringException.class);
+
+        String payload = String.format("{\"searchString\": \"%s\"}", searchString);
+
+        // Act and Assert
+        mockMvc.perform(post("/user/search")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(payload))
                 .andExpect(status().isBadRequest());

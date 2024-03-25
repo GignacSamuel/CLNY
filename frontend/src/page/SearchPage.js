@@ -28,9 +28,17 @@ function SearchPage() {
     }
 
     const Search = () => {
+        if (!searchResults || searchResults.length === 0) {
+            return (
+                <div className="bg-slate-100 m-6 p-6 text-gray-600">
+                    No results.
+                </div>
+            );
+        }
+
         return (
             <div className="bg-slate-100 m-6 p-6">
-                {searchResults && searchResults.map(result => (
+                {searchResults.map(result => (
                     <div key={result.id} className="bg-white p-4 mb-4">
                         <div className="flex items-center space-x-4">
                             <div className="w-16 h-16 relative">
@@ -49,7 +57,7 @@ function SearchPage() {
                 ))}
             </div>
         );
-    }
+    };
 
     const Right = () => {
         return (
