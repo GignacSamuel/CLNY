@@ -17,12 +17,14 @@ import {
 import { toast } from '../components/ui/use-toast';
 import {AuthContext} from "../context/AuthContext";
 import {useNavigate} from "react-router-dom";
+import {useFollow} from "../context/FollowContext";
 
 function AuthPage() {
     const [backgroundUrl, setBackgroundUrl] = useState('');
     const [backgroundOpacity, setBackgroundOpacity] = useState(0);
-    const { setUser, setToken } = useContext(AuthContext);
+    const { user, setUser, token, setToken } = useContext(AuthContext);
     const navigate = useNavigate();
+    const { updateFollowedIds } = useFollow();
 
     const loginFormSchema = z.object({
         email: z.string().email({ message: "Invalid email address" }),
@@ -73,7 +75,6 @@ function AuthPage() {
                 .then(data => {
                     setUser(data.userDTO);
                     setToken(data.token);
-                    navigate('/home');
                 })
                 .catch(error => {
                     toast({
@@ -161,7 +162,6 @@ function AuthPage() {
                 .then(data => {
                     setUser(data.userDTO);
                     setToken(data.token);
-                    navigate('/home');
                 })
                 .catch(error => {
                     toast({
@@ -234,6 +234,41 @@ function AuthPage() {
             </Form>
         )
     }
+
+    const handleUserFollow = () => {
+        fetch(`/userfollow/getFollowedIds/${user.id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                updateFollowedIds(data)
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                })
+            });
+    }
+
+    useEffect(() => {
+        if (token && user?.id) {
+            handleUserFollow();
+            navigate('/home');
+        }
+    }, [token, user, navigate]);
 
     useEffect(() => {
         const client = createClient(process.env.REACT_APP_PEXELS_KEY);
