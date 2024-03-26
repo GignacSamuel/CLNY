@@ -43,7 +43,7 @@ function SearchPage() {
                         if (result.id === user.id) {
                             navigate('/profile');
                         } else {
-                            navigate('/follow', { state: { user: result } });
+                            navigate('/follow', { state: { userSearch: result } });
                         }
                     }}>
                         <div className="flex items-center space-x-4">

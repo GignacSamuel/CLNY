@@ -64,4 +64,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AlreadyFollowingException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyFollowingException() {
+        ErrorResponse errorResponse = new ErrorResponse("You are already following this user.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFollowingException.class)
+    public ResponseEntity<ErrorResponse> handleNotFollowingException() {
+        ErrorResponse errorResponse = new ErrorResponse("You are not following this user.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }

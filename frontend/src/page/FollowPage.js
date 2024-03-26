@@ -1,14 +1,71 @@
-import React from "react";
+import React, {useContext} from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import Header from "../components/Header";
 import {useLocation} from "react-router-dom";
+import {toast} from "../components/ui/use-toast";
+import {AuthContext} from "../context/AuthContext";
 
 function FollowPage() {
     const location = useLocation();
-    const user = location.state?.user;
+    const userSearch = location.state?.userSearch;
+    const { user, token } = useContext(AuthContext);
 
     const handleFollow = () => {
-        console.log('Follow button clicked');
+        fetch(`/userfollow/follow`, {
+            method: 'POST',
+            body: JSON.stringify({ followerId: user.id, followedId: userSearch.id }),
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data)
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                })
+            });
+    };
+
+    const handleUnfollow = () => {
+        fetch(`/userfollow/unfollow`, {
+            method: 'POST',
+            body: JSON.stringify({ followerId: user.id, followedId: userSearch.id }),
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data)
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                })
+            });
     };
 
     const Body = () => {
@@ -28,31 +85,37 @@ function FollowPage() {
     }
 
     const Profile = () => {
-        if (!user) {
+        if (!userSearch) {
             return <div className="bg-slate-100 m-6 p-6 text-gray-600">No results.</div>;
         }
 
         return (
             <div className="bg-slate-100 m-6 p-6">
                 <div className="relative bg-cover bg-center bg-slate-200 h-64"
-                     style={{ backgroundImage: `url(${user.profile.bannerPicture || "/banner_picture_placeholder.png"})` }}>
+                     style={{ backgroundImage: `url(${userSearch.profile.bannerPicture || "/banner_picture_placeholder.png"})` }}>
                     <div className="absolute bottom-0 left-0 p-6">
                         <Avatar className="border-4 border-white rounded-full w-32 h-32">
-                            <AvatarImage src={user.profile.profilePicture || "/profile_picture_placeholder.jpg"}/>
+                            <AvatarImage src={userSearch.profile.profilePicture || "/profile_picture_placeholder.jpg"}/>
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                     </div>
                 </div>
                 <div className="flex justify-between items-center pt-6">
                     <div className="flex flex-col">
-                        <p className="text-2xl font-semibold">{user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : 'User Name'}</p>
-                        <p className="text-gray-600">{user.profile.biography || 'Bio.'}</p>
+                        <p className="text-2xl font-semibold">{userSearch.firstName && userSearch.lastName ? `${userSearch.firstName} ${userSearch.lastName}` : 'User Name'}</p>
+                        <p className="text-gray-600">{userSearch.profile.biography || 'Bio.'}</p>
                     </div>
                     <button
                         onClick={handleFollow}
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                     >
                         Follow
+                    </button>
+                    <button
+                        onClick={handleUnfollow}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    >
+                        Unfollow
                     </button>
                 </div>
             </div>
