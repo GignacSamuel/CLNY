@@ -38,4 +38,9 @@ public class UserFollowController {
         return ResponseEntity.ok(userFollowService.getAllFollowedIds(userId));
     }
 
+    @GetMapping("/getFollowerIds/{userId}")
+    public ResponseEntity<List<Long>> getAllFollowerIds(@PathVariable Long userId) {
+        return ResponseEntity.ok(userFollowService.getAllFollowerIds(userId));
+    }
+
 }
