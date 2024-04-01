@@ -14,6 +14,7 @@ import {
 } from "../components/ui/dialog"
 import { Textarea } from "../components/ui/textarea"
 import Header from "../components/Header";
+import NewPost from "../components/NewPost";
 
 function ProfilePage() {
     const { user, token, setUser } = useContext(AuthContext);
@@ -132,6 +133,7 @@ function ProfilePage() {
                 </div>
                 <div className="col-span-2">
                     <Profile/>
+                    <NewPost/>
                 </div>
                 <div className="col-span-1">
                     <Right/>

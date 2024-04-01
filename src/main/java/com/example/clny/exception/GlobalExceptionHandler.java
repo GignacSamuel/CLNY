@@ -76,4 +76,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EmptyPostException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyPostException() {
+        ErrorResponse errorResponse = new ErrorResponse("Content section of the post cannot be empty.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PostTooLongException.class)
+    public ResponseEntity<ErrorResponse> handlePostTooLongException() {
+        ErrorResponse errorResponse = new ErrorResponse("Content length cannot exceed 250 characters.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoPostAuthorException.class)
+    public ResponseEntity<ErrorResponse> handleNoPostAuthorException() {
+        ErrorResponse errorResponse = new ErrorResponse("Post must have an author.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }

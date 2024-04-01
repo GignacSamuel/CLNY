@@ -1,4 +1,5 @@
 import Header from "../components/Header";
+import NewPost from "../components/NewPost"
 
 function HomePage() {
 
@@ -26,7 +27,9 @@ function HomePage() {
 
     const Middle = () => {
         return (
-            <div className="bg-slate-100 m-6 p-6">Middle</div>
+            <div className="bg-slate-100 m-6 p-6">
+                <NewPost />
+            </div>
         );
     }
 
