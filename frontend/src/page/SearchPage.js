@@ -1,7 +1,8 @@
 import Header from "../components/Header";
 import {useLocation, useNavigate} from "react-router-dom";
-import {useContext} from "react";
+import React, {useContext} from "react";
 import {AuthContext} from "../context/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 
 function SearchPage() {
     const location = useLocation();
@@ -47,13 +48,10 @@ function SearchPage() {
                         }
                     }}>
                         <div className="flex items-center space-x-4">
-                            <div className="w-16 h-16 relative">
-                                <img
-                                    className="rounded-full border border-gray-300"
-                                    src={result.profile.profilePicture || "/profile_picture_placeholder.jpg"}
-                                    alt={`${result.firstName}'s profile`}
-                                />
-                            </div>
+                            <Avatar className="border-4 border-white rounded-full w-16 h-16">
+                                <AvatarImage src={result.profile.profilePicture || "/profile_picture_placeholder.jpg"}/>
+                                <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
                             <div className="flex-1">
                                 <p className="text-lg font-semibold">{result.firstName} {result.lastName}</p>
                                 <p className="text-sm text-gray-600">{result.profile.biography || 'Bio.'}</p>

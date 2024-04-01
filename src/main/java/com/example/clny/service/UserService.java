@@ -8,6 +8,7 @@ import com.example.clny.model.AuthenticationResponse;
 import com.example.clny.model.User;
 import com.example.clny.repository.CredentialsRepository;
 import com.example.clny.repository.UserRepository;
+import com.example.clny.util.FileUploadUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -100,7 +101,7 @@ public class UserService {
 
     public UserDTO updateProfilePicture(Long userId, MultipartFile file) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("no user with id : " + userId));
-        String webPath = processFileUpload(file, PROFILE_PICTURE_DIRECTORY);
+        String webPath = FileUploadUtil.processFileUpload(file, PROFILE_PICTURE_DIRECTORY);
 
         deletePreviousProfilePicture(user);
 
@@ -110,41 +111,12 @@ public class UserService {
 
     public UserDTO updateBannerPicture(Long userId, MultipartFile file) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("no user with id : " + userId));
-        String webPath = processFileUpload(file, BANNER_PICTURE_DIRECTORY);
+        String webPath = FileUploadUtil.processFileUpload(file, BANNER_PICTURE_DIRECTORY);
 
         deletePreviousBannerPicture(user);
 
         user.getProfile().setBannerPicture(webPath);
         return userMapper.userToUserDTO(userRepository.save(user));
-    }
-
-    private String processFileUpload(MultipartFile file, Path directory) throws Exception {
-        if (file.isEmpty()) {
-            throw new EmptyFileException();
-        }
-
-        String mimeType = file.getContentType();
-        if (mimeType == null || !mimeType.startsWith("image/")) {
-            throw new FileNotImageException();
-        }
-
-        long maxFileSize = 10 * 1024 * 1024; // 10MB
-        if (file.getSize() > maxFileSize) {
-            throw new FileTooLargeException();
-        }
-
-        String fileName = file.getOriginalFilename();
-        String fileType = fileName.substring(fileName.lastIndexOf("."));
-        String newFileName = UUID.randomUUID() + fileType;
-
-        Path storePath = directory.resolve(newFileName);
-        file.transferTo(storePath);
-
-        return getWebPath(storePath);
-    }
-
-    private String getWebPath(Path storePath) {
-        return storePath.toString().substring(storePath.toString().indexOf("/uploads"));
     }
 
     private void deletePreviousProfilePicture(User user) {
