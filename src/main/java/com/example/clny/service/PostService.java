@@ -48,9 +48,11 @@ public class PostService {
         }
 
         List<String> images = new ArrayList<>();
-        for(MultipartFile file : files) {
-            String webPath = FileUploadUtil.processFileUpload(file, POST_PICTURE_DIRECTORY);
-            images.add(webPath);
+        if(files != null) {
+            for(MultipartFile file : files) {
+                String webPath = FileUploadUtil.processFileUpload(file, POST_PICTURE_DIRECTORY);
+                images.add(webPath);
+            }
         }
 
         Post post = postMapper.postDTOToPost(postDTO);

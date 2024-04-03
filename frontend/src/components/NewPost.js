@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
+import {toast} from "../components/ui/use-toast";
+import {AuthContext} from "../context/AuthContext";
 
 function NewPost() {
     const [content, setContent] = useState('');
     const [images, setImages] = useState([]);
+    const { user, token } = useContext(AuthContext);
 
     const handleContentChange = (e) => {
         setContent(e.target.value);
@@ -14,22 +17,56 @@ function NewPost() {
     };
 
     const handlePublishPost = () => {
-        console.log('Publishing post with content:', content);
-        console.log('Uploaded images:', images);
+        const formData = new FormData();
+        const postDTO = {
+            content: content,
+            author: user
+        }
+        formData.append('postDTO', new Blob([JSON.stringify(postDTO)], { type: "application/json" }));
 
-        setContent('');
-        setImages([]);
+        images.forEach((image, index) => {
+            formData.append(`file`, image);
+        });
+
+        fetch('/post/createPost', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                setContent('');
+                setImages([]);
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                });
+            });
     };
+
 
     return (
         <div className="w-full bg-white shadow-md rounded-lg p-6">
-      <textarea
-          value={content}
-          onChange={handleContentChange}
-          className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:shadow-outline mb-4"
-          rows="4"
-          placeholder="What's on your mind?"
-      ></textarea>
+            <textarea
+                value={content}
+                onChange={handleContentChange}
+                className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:shadow-outline mb-4"
+                rows="4"
+                placeholder="What's on your mind?"
+            ></textarea>
             <div className="mb-4">
                 {images.length > 0 && (
                     <div className="grid grid-cols-3 gap-2">
