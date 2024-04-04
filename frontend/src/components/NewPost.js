@@ -1,11 +1,13 @@
 import React, {useContext, useState} from 'react';
 import {toast} from "../components/ui/use-toast";
 import {AuthContext} from "../context/AuthContext";
+import {PostContext} from "../context/PostContext";
 
 function NewPost() {
     const [content, setContent] = useState('');
     const [images, setImages] = useState([]);
     const { user, token } = useContext(AuthContext);
+    const { setUserPosts } = useContext(PostContext);
 
     const handleContentChange = (e) => {
         setContent(e.target.value);
@@ -44,7 +46,7 @@ function NewPost() {
                 return response.json();
             })
             .then(data => {
-                console.log(data);
+                setUserPosts(data)
                 setContent('');
                 setImages([]);
             })

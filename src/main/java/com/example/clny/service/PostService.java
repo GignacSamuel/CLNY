@@ -35,7 +35,7 @@ public class PostService {
         this.postMapper = postMapper;
     }
 
-    public PostDTO createPost(PostDTO postDTO, List<MultipartFile> files) throws Exception {
+    public List<PostDTO> createPost(PostDTO postDTO, List<MultipartFile> files) throws Exception {
         if(postDTO == null) {
             throw new IllegalArgumentException("param postDTO cannot be null.");
         }
@@ -62,8 +62,9 @@ public class PostService {
 
         Post post = postMapper.postDTOToPost(postDTO);
         post.setImages(images);
+        postRepository.save(post);
 
-        return postMapper.postToPostDTO(postRepository.save(post));
+        return getPostsFromUser(postDTO.getAuthor().getId());
     }
 
     public List<PostDTO> getPostsFromUser(Long userId) {

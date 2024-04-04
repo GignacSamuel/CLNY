@@ -20,7 +20,7 @@ public class PostController {
     }
 
     @PostMapping("/createPost")
-    public ResponseEntity<PostDTO> createPost(@RequestPart("postDTO") PostDTO postDTO, @RequestPart(name = "file", required = false) List<MultipartFile> files) throws Exception {
+    public ResponseEntity<List<PostDTO>> createPost(@RequestPart("postDTO") PostDTO postDTO, @RequestPart(name = "file", required = false) List<MultipartFile> files) throws Exception {
         return ResponseEntity.ok(postService.createPost(postDTO, files));
     }
 
