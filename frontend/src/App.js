@@ -8,23 +8,26 @@ import {AuthContextProvider} from "./context/AuthContext";
 import {FollowProvider} from "./context/FollowContext";
 import PrivateRoute from "./util/PrivateRoute";
 import {Toaster} from "./components/ui/toaster";
+import {PostProvider} from "./context/PostContext";
 
 function App() {
     return (
         <AuthContextProvider>
             <FollowProvider>
-                <BrowserRouter>
-                    <Toaster />
-                    <Routes>
-                        <Route path="/" element={<AuthPage/>}/>
-                        <Route element={<PrivateRoute />}>
-                            <Route path="/home" element={<HomePage />} />
-                            <Route path="/profile" element={<ProfilePage />} />
-                            <Route path="/search" element={<SearchPage />} />
-                            <Route path="/follow" element={<FollowPage />} />
-                        </Route>
-                    </Routes>
-                </BrowserRouter>
+                <PostProvider>
+                    <BrowserRouter>
+                        <Toaster />
+                        <Routes>
+                            <Route path="/" element={<AuthPage/>}/>
+                            <Route element={<PrivateRoute />}>
+                                <Route path="/home" element={<HomePage />} />
+                                <Route path="/profile" element={<ProfilePage />} />
+                                <Route path="/search" element={<SearchPage />} />
+                                <Route path="/follow" element={<FollowPage />} />
+                            </Route>
+                        </Routes>
+                    </BrowserRouter>
+                </PostProvider>
             </FollowProvider>
         </AuthContextProvider>
     );

@@ -1,4 +1,4 @@
-import React, {useContext, useRef} from "react";
+import React, {useContext, useEffect, useRef} from "react";
 import {Button} from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
 import {AuthContext} from "../context/AuthContext";
@@ -15,10 +15,13 @@ import {
 import { Textarea } from "../components/ui/textarea"
 import Header from "../components/Header";
 import NewPost from "../components/NewPost";
+import {PostContext} from "../context/PostContext";
+import PostList from "../components/PostList";
 
 function ProfilePage() {
     const { user, token, setUser } = useContext(AuthContext);
     const bioRef = useRef(null);
+    const { userPosts, setUserPosts } = useContext(PostContext);
 
     const handleProfilePicChange = (event) => {
         const file = event.target.files[0];
@@ -125,6 +128,37 @@ function ProfilePage() {
             });
     }
 
+    const getUserPosts = () => {
+        fetch(`/post/getPosts/${user.id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                setUserPosts(data)
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                })
+            });
+    }
+
+    useEffect(() => {
+        getUserPosts()
+    }, []);
+
     const Body = () => {
         return (
             <div className="grid grid-cols-4">
@@ -134,6 +168,7 @@ function ProfilePage() {
                 <div className="col-span-2">
                     <Profile/>
                     <NewPost/>
+                    <PostList posts={userPosts}/>
                 </div>
                 <div className="col-span-1">
                     <Right/>
