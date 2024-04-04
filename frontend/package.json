@@ -16,6 +16,7 @@
     "@testing-library/user-event": "^13.5.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "embla-carousel-react": "^8.0.1",
     "lucide-react": "^0.344.0",
     "pexels": "^1.4.0",
     "react": "^18.2.0",

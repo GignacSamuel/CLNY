@@ -61,7 +61,7 @@ function NewPost() {
 
 
     return (
-        <div className="w-full bg-white shadow-md rounded-lg p-6">
+        <div className="w-full bg-white rounded-lg p-6">
             <textarea
                 value={content}
                 onChange={handleContentChange}

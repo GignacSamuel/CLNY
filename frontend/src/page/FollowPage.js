@@ -1,16 +1,18 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import Header from "../components/Header";
 import {useLocation} from "react-router-dom";
 import {toast} from "../components/ui/use-toast";
 import {AuthContext} from "../context/AuthContext";
 import {useFollow} from "../context/FollowContext";
+import PostList from "../components/PostList";
 
 function FollowPage() {
     const location = useLocation();
     const userSearch = location.state?.userSearch;
     const { user, token } = useContext(AuthContext);
     const { followedIds, updateFollowedIds } = useFollow();
+    const [userSearchPosts, setUserSearchPostsState] = useState([]);
 
     const handleFollow = () => {
         fetch(`/userfollow/follow`, {
@@ -70,6 +72,37 @@ function FollowPage() {
             });
     };
 
+    const getUserPosts = () => {
+        fetch(`/post/getPosts/${userSearch.id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                setUserSearchPostsState(data);
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                })
+            });
+    }
+
+    useEffect(() => {
+        getUserPosts()
+    }, []);
+
     const Body = () => {
         return (
             <div className="grid grid-cols-4">
@@ -78,6 +111,7 @@ function FollowPage() {
                 </div>
                 <div className="col-span-2">
                     <Profile/>
+                    <PostList posts={userSearchPosts}/>
                 </div>
                 <div className="col-span-1">
                     <Right/>

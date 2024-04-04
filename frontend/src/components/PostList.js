@@ -1,41 +1,65 @@
 import React from "react";
-import {Avatar, AvatarFallback, AvatarImage} from "../components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import {Button} from "../components/ui/button";
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "../components/ui/carousel"
 
 function PostList({ posts }) {
 
+    const sortedPosts = posts.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
+
     const Post = ({ post }) => {
         return (
-            <div className="border p-4 rounded-lg shadow-lg space-y-2">
-                <div className="flex space-x-2">
-                    <div>
+            <div className="bg-slate-100 rounded-lg">
+                <div className="p-4">
+                    <div className="flex items-center space-x-3">
                         <Avatar>
                             <AvatarImage src={post.author.profile.profilePicture || "/profile_picture_placeholder.jpg"}/>
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
-                    </div>
-                    <div>
-                        <p className="font-semibold">{post.author.firstName} {post.author.lastName}</p>
-                        <p className="text-sm text-gray-500">{new Date(post.postDate).toLocaleString()}</p>
+                        <div>
+                            <p className="font-semibold">{post.author.firstName} {post.author.lastName}</p>
+                            <p className="text-sm text-gray-600">{new Date(post.postDate).toLocaleString()}</p>
+                        </div>
                     </div>
                 </div>
-                <div>
+                <div className="p-4">
                     <p>{post.content}</p>
-                    {post.images.map((image, index) => (
-                        <img key={index} src={image} alt="Post" className="mt-2" />
-                    ))}
+                    {post.images && post.images.length > 0 && (
+                        <div className="mt-2">
+                            <Carousel className="mx-auto w-4/5">
+                                <CarouselContent>
+                                    {post.images.map((image, index) => (
+                                        <CarouselItem key={index} className="flex justify-center items-center h-50">
+                                            <img src={image} alt="Post" className="max-h-full max-w-full object-contain rounded-lg"/>
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                                <CarouselPrevious/>
+                                <CarouselNext/>
+                            </Carousel>
+                        </div>
+                    )}
                 </div>
-                <div className="flex space-x-4">
-                    <button className="px-4 py-2 rounded text-white bg-blue-500 hover:bg-blue-600">Like</button>
-                    <button className="px-4 py-2 rounded text-white bg-red-500 hover:bg-red-600">Dislike</button>
-                    <button className="px-4 py-2 rounded text-white bg-gray-500 hover:bg-gray-600">Comment</button>
+                <div className="p-4 flex justify-between items-center">
+                    <div className="flex space-x-4">
+                        <button className="px-4 py-2 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-600 cursor-pointer">Like</button>
+                        <button className="px-4 py-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:shadow-outline-red active:bg-red-600 cursor-pointer">Dislike</button>
+                    </div>
+                    <Button>Comment</Button>
                 </div>
             </div>
         );
     };
 
     return (
-        <div className="space-y-4">
-            {posts.map(post => (
+        <div className="space-y-4 p-6">
+            {sortedPosts.map(post => (
                 <Post key={post.id} post={post} />
             ))}
         </div>
