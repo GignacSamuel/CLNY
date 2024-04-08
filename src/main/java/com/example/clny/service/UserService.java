@@ -121,20 +121,12 @@ public class UserService {
 
     private void deletePreviousProfilePicture(User user) {
         String webPath = user.getProfile().getProfilePicture();
-        deleteFileAtPath(webPath, PROFILE_PICTURE_DIRECTORY);
+        FileUploadUtil.deleteFileAtPath(webPath, PROFILE_PICTURE_DIRECTORY);
     }
 
     private void deletePreviousBannerPicture(User user) {
         String webPath = user.getProfile().getBannerPicture();
-        deleteFileAtPath(webPath, BANNER_PICTURE_DIRECTORY);
-    }
-
-    private void deleteFileAtPath(String webPath, Path directory) {
-        if (webPath != null && !webPath.isEmpty()) {
-            String fileName = webPath.substring(webPath.lastIndexOf('/') + 1);
-            File fileToDelete = directory.resolve(fileName).toFile();
-            fileToDelete.delete();
-        }
+        FileUploadUtil.deleteFileAtPath(webPath, BANNER_PICTURE_DIRECTORY);
     }
 
     public UserDTO updateBiography(Long userId, String newBiography) throws Exception {

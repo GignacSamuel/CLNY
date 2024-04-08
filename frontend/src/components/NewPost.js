@@ -2,6 +2,8 @@ import React, {useContext, useState} from 'react';
 import {toast} from "../components/ui/use-toast";
 import {AuthContext} from "../context/AuthContext";
 import {PostContext} from "../context/PostContext";
+import { Send } from 'lucide-react';
+import { ImagePlus } from 'lucide-react';
 
 function NewPost() {
     const [content, setContent] = useState('');
@@ -85,8 +87,8 @@ function NewPost() {
             </div>
             <div className="flex justify-between items-center">
                 <div className="flex items-center">
-                    <label htmlFor="image-upload" className="px-4 py-2 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-600 cursor-pointer">
-                        Add images
+                    <label htmlFor="image-upload" className="px-4 py-2 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-600 cursor-pointer flex items-center">
+                        <ImagePlus className="mr-2"/> Add images
                     </label>
                     <input
                         id="image-upload"
@@ -99,9 +101,9 @@ function NewPost() {
                 </div>
                 <button
                     onClick={handlePublishPost}
-                    className="px-4 py-2 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:shadow-outline-green active:bg-green-600"
+                    className="px-4 py-2 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:shadow-outline-green active:bg-green-600 flex items-center"
                 >
-                    Publish
+                    <Send color="white" className="mr-2"/> Publish
                 </button>
             </div>
         </div>

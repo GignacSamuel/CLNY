@@ -6,6 +6,7 @@ import com.example.clny.exception.custom.NoPostAuthorException;
 import com.example.clny.exception.custom.PostTooLongException;
 import com.example.clny.mapper.PostMapper;
 import com.example.clny.model.Post;
+import com.example.clny.model.User;
 import com.example.clny.repository.PostRepository;
 import com.example.clny.repository.UserRepository;
 import com.example.clny.util.FileUploadUtil;
@@ -77,6 +78,22 @@ public class PostService {
         return posts.stream()
                 .map(postMapper::postToPostDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<PostDTO> deletePost(Long postId) {
+        Post toDelete = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("no post with id : " + postId));
+        Long userId = toDelete.getAuthor().getId();
+
+        deletePostPictures(toDelete);
+
+        postRepository.delete(toDelete);
+        return getPostsFromUser(userId);
+    }
+
+    private void deletePostPictures(Post post) {
+        for(String webPath : post.getImages()) {
+            FileUploadUtil.deleteFileAtPath(webPath, POST_PICTURE_DIRECTORY);
+        }
     }
 
 }

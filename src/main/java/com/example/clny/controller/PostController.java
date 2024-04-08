@@ -29,4 +29,9 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostsFromUser(userId));
     }
 
+    @DeleteMapping("/deletePost/{postId}")
+    public ResponseEntity<List<PostDTO>> deletePost(@PathVariable Long postId) {
+        return ResponseEntity.ok(postService.deletePost(postId));
+    }
+
 }

@@ -5,6 +5,7 @@ import React, {useContext, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 import { toast } from '../components/ui/use-toast';
+import { LogOut } from 'lucide-react';
 
 function Header() {
     const navigate = useNavigate();
@@ -73,7 +74,9 @@ function Header() {
                     </Avatar>
                 </div>
                 <div>
-                    <Button variant="destructive" onClick={handleLogout}>Logout</Button>
+                    <Button variant="destructive" onClick={handleLogout}>
+                        <LogOut color="white"/> Logout
+                    </Button>
                 </div>
             </div>
         </nav>

@@ -5,6 +5,7 @@ import com.example.clny.exception.custom.FileNotImageException;
 import com.example.clny.exception.custom.FileTooLargeException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.UUID;
 
@@ -39,6 +40,14 @@ public final class FileUploadUtil {
 
     public static String getWebPath(Path storePath) {
         return storePath.toString().substring(storePath.toString().indexOf("/uploads"));
+    }
+
+    public static void deleteFileAtPath(String webPath, Path directory) {
+        if (webPath != null && !webPath.isEmpty()) {
+            String fileName = webPath.substring(webPath.lastIndexOf('/') + 1);
+            File fileToDelete = directory.resolve(fileName).toFile();
+            fileToDelete.delete();
+        }
     }
 
 }
