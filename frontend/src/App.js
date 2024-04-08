@@ -4,6 +4,7 @@ import HomePage from "./page/HomePage";
 import ProfilePage from "./page/ProfilePage";
 import SearchPage from "./page/SearchPage";
 import FollowPage from "./page/FollowPage";
+import PostPage from "./page/PostPage";
 import {AuthContextProvider} from "./context/AuthContext";
 import {FollowProvider} from "./context/FollowContext";
 import PrivateRoute from "./util/PrivateRoute";
@@ -24,6 +25,7 @@ function App() {
                                 <Route path="/profile" element={<ProfilePage />} />
                                 <Route path="/search" element={<SearchPage />} />
                                 <Route path="/follow" element={<FollowPage />} />
+                                <Route path="/post" element={<PostPage />} />
                             </Route>
                         </Routes>
                     </BrowserRouter>
