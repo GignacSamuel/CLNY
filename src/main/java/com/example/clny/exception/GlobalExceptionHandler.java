@@ -94,4 +94,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EmptyCommentException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyCommentException() {
+        ErrorResponse errorResponse = new ErrorResponse("Content section of the comment cannot be empty.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CommentTooLongException.class)
+    public ResponseEntity<ErrorResponse> handleCommentTooLongException() {
+        ErrorResponse errorResponse = new ErrorResponse("Content length cannot exceed 250 characters.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoCommentAuthorException.class)
+    public ResponseEntity<ErrorResponse> handleNoCommentAuthorException() {
+        ErrorResponse errorResponse = new ErrorResponse("Comment must have an author.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoCommentPostException.class)
+    public ResponseEntity<ErrorResponse> handleNoCommentPostException() {
+        ErrorResponse errorResponse = new ErrorResponse("Comment must be linked to a post.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }
