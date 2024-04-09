@@ -38,7 +38,7 @@ function PostPage() {
         return (
             <div className="bg-slate-100 m-6 p-6">
                 <Post key={post.id} post={post}/>
-                <CommentsSection />
+                <CommentsSection post={post}/>
             </div>
         );
     }

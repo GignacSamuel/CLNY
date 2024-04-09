@@ -3,6 +3,7 @@ package com.example.clny.controller;
 import com.example.clny.dto.CommentDTO;
 import com.example.clny.dto.UserDTO;
 import com.example.clny.service.CommentService;
+import com.example.clny.util.CommentNode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +21,12 @@ public class CommentController {
     }
 
     @PostMapping("/createComment")
-    public ResponseEntity<List<List<CommentDTO>>> createComment(@RequestBody CommentDTO commentDTO) throws Exception {
+    public ResponseEntity<List<CommentNode>> createComment(@RequestBody CommentDTO commentDTO) throws Exception {
         return ResponseEntity.ok(commentService.createComment(commentDTO));
     }
 
     @GetMapping("/getComments/{postId}")
-    public ResponseEntity<List<List<CommentDTO>>> getCommentsFromPost(@PathVariable Long postId) {
+    public ResponseEntity<List<CommentNode>> getCommentsFromPost(@PathVariable Long postId) {
         return ResponseEntity.ok(commentService.getCommentsFromPost(postId));
     }
 

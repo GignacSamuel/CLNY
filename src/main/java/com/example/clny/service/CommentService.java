@@ -8,6 +8,7 @@ import com.example.clny.exception.custom.NoCommentPostException;
 import com.example.clny.mapper.CommentMapper;
 import com.example.clny.model.Comment;
 import com.example.clny.repository.CommentRepository;
+import com.example.clny.util.CommentNode;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class CommentService {
         this.commentMapper = commentMapper;
     }
 
-    public List<List<CommentDTO>> createComment(CommentDTO commentDTO) throws Exception {
+    public List<CommentNode> createComment(CommentDTO commentDTO) throws Exception {
         if(commentDTO == null) {
             throw new IllegalArgumentException("param commentDTO cannot be null.");
         }
@@ -54,39 +55,31 @@ public class CommentService {
         return getCommentsFromPost(commentDTO.getPost().getId());
     }
 
-    public List<List<CommentDTO>> getCommentsFromPost(Long postId) {
+    public List<CommentNode> getCommentsFromPost(Long postId) {
         List<Comment> comments = commentRepository.findByPostId(postId);
-
-        Map<Long, List<CommentDTO>> commentThreads = new HashMap<>();
-
-        commentThreads.put(null, new ArrayList<>());
+        Map<Long, CommentNode> commentMap = new HashMap<>();
 
         for (Comment comment : comments) {
             CommentDTO commentDto = commentMapper.commentToCommentDTO(comment);
-            Long parentCommentId = comment.getParentComment() != null ? comment.getParentComment().getId() : null;
-
-            commentThreads.computeIfAbsent(parentCommentId, k -> new ArrayList<>()).add(commentDto);
+            commentMap.put(comment.getId(), new CommentNode(commentDto));
         }
 
-        List<List<CommentDTO>> commentHierarchy = new ArrayList<>();
-        for (CommentDTO topLevelComment : commentThreads.get(null)) {
-            List<CommentDTO> thread = new ArrayList<>();
-            thread.add(topLevelComment);
-            buildCommentThread(topLevelComment.getId(), commentThreads, thread);
-            commentHierarchy.add(thread);
+        List<CommentNode> commentHierarchy = new ArrayList<>();
+        for (Comment comment : comments) {
+            CommentNode node = commentMap.get(comment.getId());
+            Long parentCommentId = comment.getParentComment() != null ? comment.getParentComment().getId() : null;
+
+            if (parentCommentId == null) {
+                commentHierarchy.add(node);
+            } else {
+                CommentNode parentNode = commentMap.get(parentCommentId);
+                if (parentNode != null) {
+                    parentNode.addReply(node);
+                }
+            }
         }
 
         return commentHierarchy;
-    }
-
-    private void buildCommentThread(Long commentId, Map<Long, List<CommentDTO>> commentThreads, List<CommentDTO> thread) {
-        List<CommentDTO> replies = commentThreads.get(commentId);
-        if (replies != null) {
-            for (CommentDTO reply : replies) {
-                thread.add(reply);
-                buildCommentThread(reply.getId(), commentThreads, thread);
-            }
-        }
     }
 
 }

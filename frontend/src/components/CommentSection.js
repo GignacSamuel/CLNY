@@ -1,36 +1,98 @@
-import React, { useState } from "react";
-import { Button } from "../components/ui/button";
-import { Send, Reply } from "lucide-react";
+import React, { useContext, useEffect, useState } from 'react';
+import { Button } from '../components/ui/button';
+import { Send, Reply } from 'lucide-react';
+import { toast } from "../components/ui/use-toast";
+import { AuthContext } from "../context/AuthContext";
 
-function CommentsSection() {
-    const [comment, setComment] = useState("");
-    const [replies, setReplies] = useState({});
+function CommentsSection({ post }) {
+    const [comment, setComment] = useState('');
+    const [comments, setComments] = useState([]);
     const [activeReplyBox, setActiveReplyBox] = useState(null);
+    const { user, token } = useContext(AuthContext);
 
     const handleCommentSubmit = (e) => {
         e.preventDefault();
-        console.log("Comment submitted: ", comment);
-        setComment("");
+
+        const commentDTO = {
+            content: comment,
+            author: user,
+            post: post
+        };
+
+        fetch(`/comment/createComment`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(commentDTO),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                setComment("");
+                setComments(data);
+                console.log(data)
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                });
+            });
     };
 
-    const handleReplySubmit = (replyContent, parentId) => {
-        console.log("Reply submitted for comment id", parentId, "with content:", replyContent);
-        setReplies({ ...replies, [parentId]: replyContent });
-        setActiveReplyBox(null);
-    };
+    const getPostComments = () => {
+        fetch(`/comment/getComments/${post.id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                setComments(data);
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                });
+            });
+    }
 
-    const Comment = ({ id, content, children }) => {
+    useEffect(() => {
+        getPostComments();
+    }, [post.id]);
+
+    const Comment = ({ node }) => {
         const [reply, setReply] = useState("");
+        const { comment, replies } = node;
 
         return (
             <div className="bg-slate-200 p-4 rounded-lg mt-4">
-                <p>{content}</p>
+                <p>{comment.content}</p>
                 <div className="flex justify-start mt-2">
-                    <Button onClick={() => setActiveReplyBox(id === activeReplyBox ? null : id)}>
+                    <Button onClick={() => setActiveReplyBox(comment.id === activeReplyBox ? null : comment.id)}>
                         <Reply color="white"/> Reply
                     </Button>
                 </div>
-                {activeReplyBox === id && (
+                {activeReplyBox === comment.id && (
                     <div className="mt-2">
                         <textarea
                             className="w-full p-2 border rounded-lg"
@@ -38,12 +100,18 @@ function CommentsSection() {
                             value={reply}
                             onChange={(e) => setReply(e.target.value)}
                         />
-                        <Button onClick={() => handleReplySubmit(reply, id)} className="mt-2">
+                        <Button onClick={() => console.log('Reply submitted:', reply)} className="mt-2">
                             <Send color="white" className="mr-2"/> Send
                         </Button>
                     </div>
                 )}
-                {children}
+                {replies && replies.length > 0 && (
+                    <div className="ml-4">
+                        {replies.map((replyNode) => (
+                            <Comment key={replyNode.comment.id} node={replyNode} />
+                        ))}
+                    </div>
+                )}
             </div>
         );
     };
@@ -65,14 +133,9 @@ function CommentsSection() {
                 </button>
             </form>
             <div>
-                {/* Placeholder comments */}
-                <Comment id="1" content="This is a comment">
-                    {/* Display reply if exists */}
-                    {replies['1'] && <Comment id="1-1" content={replies['1']} />}
-                </Comment>
-                <Comment id="2" content="This is another comment">
-                    {replies['2'] && <Comment id="2-1" content={replies['2']} />}
-                </Comment>
+                {comments.map(node => (
+                    <Comment key={node.comment.id} node={node} />
+                ))}
             </div>
         </div>
     );
