@@ -3,6 +3,7 @@ import { Button } from '../components/ui/button';
 import { Send, Reply } from 'lucide-react';
 import { toast } from "../components/ui/use-toast";
 import { AuthContext } from "../context/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
 function CommentsSection({ post }) {
     const [comment, setComment] = useState('');
@@ -19,6 +20,22 @@ function CommentsSection({ post }) {
             post: post
         };
 
+        submitComment(commentDTO);
+    };
+
+    const handleReplySubmit = (replyContent, parentId) => {
+        const commentDTO = {
+            content: replyContent,
+            author: user,
+            post: post,
+            parentComment: { id: parentId }
+        };
+
+        submitComment(commentDTO);
+        setActiveReplyBox(null);
+    };
+
+    const submitComment = (commentDTO) => {
         fetch(`/comment/createComment`, {
             method: 'POST',
             headers: {
@@ -37,8 +54,7 @@ function CommentsSection({ post }) {
             })
             .then(data => {
                 setComment("");
-                setComments(data);
-                console.log(data)
+                setComments(data)
             })
             .catch(error => {
                 toast({
@@ -74,7 +90,7 @@ function CommentsSection({ post }) {
                     description: error.message,
                 });
             });
-    }
+    };
 
     useEffect(() => {
         getPostComments();
@@ -86,7 +102,17 @@ function CommentsSection({ post }) {
 
         return (
             <div className="bg-slate-200 p-4 rounded-lg mt-4">
-                <p>{comment.content}</p>
+                <div className="flex items-center space-x-3">
+                    <Avatar>
+                        <AvatarImage src={comment.author.profile.profilePicture || "/profile_picture_placeholder.jpg"} />
+                        <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <p className="font-semibold">{comment.author.firstName} {comment.author.lastName}</p>
+                        <p className="text-sm text-gray-600">{new Date(comment.commentDate).toLocaleString()}</p>
+                    </div>
+                </div>
+                <p className="mt-4">{comment.content}</p>
                 <div className="flex justify-start mt-2">
                     <Button onClick={() => setActiveReplyBox(comment.id === activeReplyBox ? null : comment.id)}>
                         <Reply color="white"/> Reply
@@ -100,7 +126,7 @@ function CommentsSection({ post }) {
                             value={reply}
                             onChange={(e) => setReply(e.target.value)}
                         />
-                        <Button onClick={() => console.log('Reply submitted:', reply)} className="mt-2">
+                        <Button onClick={() => handleReplySubmit(reply, comment.id)} className="mt-2">
                             <Send color="white" className="mr-2"/> Send
                         </Button>
                     </div>
