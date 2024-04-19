@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import {Button} from "../components/ui/button";
 import {
@@ -19,6 +19,7 @@ import {useNavigate} from "react-router-dom";
 function Post({ post }) {
     const { user, token } = useContext(AuthContext);
     const { setUserPosts } = useContext(PostContext);
+    const [reactions, setReactions] = useState([]);
     const navigate = useNavigate();
 
     const handleCommentClick = () => {
@@ -50,6 +51,76 @@ function Post({ post }) {
                     description: error.message,
                 })
             });
+    };
+
+    const getPostReactions = () => {
+        fetch(`/reaction/getReactions/${post.id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                setReactions(data)
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                })
+            });
+    }
+
+    const addReaction = (reactionType) => {
+        const reactionDTO = {
+            type: reactionType,
+            author: user,
+            post: post
+        }
+
+        fetch(`/reaction/addReaction`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reactionDTO),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                setReactions(data)
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                })
+            });
+    }
+
+    useEffect(() => {
+        getPostReactions()
+    }, []);
+
+    const countReactions = (type) => {
+        return reactions.filter(reaction => reaction.type === type).length;
     };
 
     return (
@@ -94,11 +165,13 @@ function Post({ post }) {
             </div>
             <div className="p-4 flex justify-between items-center">
                 <div className="flex space-x-4">
-                    <button className="px-4 py-2 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-600 cursor-pointer flex items-center">
-                        <ThumbsUp color="white" className="mr-2"/> Like
+                    <button onClick={() => addReaction('LIKE')}
+                            className="px-4 py-2 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-600 cursor-pointer flex items-center">
+                        <ThumbsUp color="white" className="mr-2"/> Like {countReactions('LIKE')}
                     </button>
-                    <button className="px-4 py-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:shadow-outline-red active:bg-red-600 cursor-pointer flex items-center">
-                        <ThumbsDown color="white" className="mr-2"/> Dislike
+                    <button onClick={() => addReaction('DISLIKE')}
+                            className="px-4 py-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:shadow-outline-red active:bg-red-600 cursor-pointer flex items-center">
+                        <ThumbsDown color="white" className="mr-2"/> Dislike {countReactions('DISLIKE')}
                     </button>
                 </div>
                 <Button onClick={handleCommentClick}>

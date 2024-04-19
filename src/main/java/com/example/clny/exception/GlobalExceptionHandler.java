@@ -118,4 +118,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(NoReactionTypeException.class)
+    public ResponseEntity<ErrorResponse> handleNoReactionTypeException() {
+        ErrorResponse errorResponse = new ErrorResponse("Reaction must have a valid type.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoReactionAuthorException.class)
+    public ResponseEntity<ErrorResponse> handleNoReactionAuthorException() {
+        ErrorResponse errorResponse = new ErrorResponse("Reaction must have an author.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoReactionPostException.class)
+    public ResponseEntity<ErrorResponse> handleNoReactionPostException() {
+        ErrorResponse errorResponse = new ErrorResponse("Reaction must be linked to a post.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }
