@@ -10,6 +10,7 @@ import com.example.clny.model.Post;
 import com.example.clny.model.User;
 import com.example.clny.repository.PostRepository;
 import com.example.clny.repository.UserRepository;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -194,6 +195,42 @@ public class PostServiceTest {
         assertThrows(NoPostAuthorException.class, () -> {
             postService.createPost(postDTO, files);
         }, "Expected createPost() to throw NoPostAuthorException, but it didn't");
+    }
+
+    @Test
+    void getFeedPostsTest_HappyPath() {
+        // Arrange
+        Long userId = 1L;
+
+        Post post = new Post("content", new ArrayList<>(), new User());
+        PostDTO postDTO = new PostDTO("content", new ArrayList<>(), new UserDTO());
+
+        List<Post> posts = List.of(post);
+        List<PostDTO> postDTOs = List.of(postDTO);
+
+        when(userRepository.existsById(userId)).thenReturn(true);
+        when(postRepository.findAllByFollowing(userId)).thenReturn(posts);
+        when(postMapper.postToPostDTO(any(Post.class))).thenReturn(postDTO);
+
+        // Act
+        List<PostDTO> result = postService.getFeedPosts(userId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(postDTOs.size(), result.size());
+    }
+
+    @Test
+    void getFeedPostsTest_UserDoesNotExist() {
+        // Arrange
+        Long userId = 1L;
+
+        when(userRepository.existsById(userId)).thenReturn(false);
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            postService.getFeedPosts(userId);
+        }, "Expected getFeedPosts() to throw IllegalArgumentException, but it didn't");
     }
 
 }

@@ -166,4 +166,18 @@ public class PostControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void getFeedPostsTest_HappyPath() throws Exception {
+        // Arrange
+        Long userId = 1L;
+
+        List<PostDTO> postDTOs = List.of(new PostDTO("content",new ArrayList<>(), new UserDTO()));
+
+        when(postService.getFeedPosts(userId)).thenReturn(postDTOs);
+
+        // Act and Assert
+        mockMvc.perform(get("/post/getFeed/{userId}", userId))
+                .andExpect(status().isOk());
+    }
+
 }
