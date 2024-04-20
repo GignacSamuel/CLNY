@@ -5,7 +5,7 @@ import React, {useContext, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 import { toast } from '../components/ui/use-toast';
-import { LogOut } from 'lucide-react';
+import { LogOut, Home } from 'lucide-react';
 
 function Header() {
     const navigate = useNavigate();
@@ -19,6 +19,10 @@ function Header() {
 
     const handleProfileClick = () => {
         navigate('/profile');
+    };
+
+    const handleHomeClick = () => {
+        navigate('/home');
     };
 
     const handleUserSearch = () => {
@@ -58,6 +62,9 @@ function Header() {
                 <img className="rounded-lg h-[50px]" src="/logo_small.png" alt="CLNY Logo"/>
             </div>
             <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+                <Button onClick={handleHomeClick} className="mr-4">
+                    <Home color="white"/>
+                </Button>
                 <div className="lg:flex-grow">
                     <div className="flex w-full max-w-sm items-center space-x-2">
                         <Input
