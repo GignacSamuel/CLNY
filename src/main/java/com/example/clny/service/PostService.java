@@ -90,6 +90,18 @@ public class PostService {
         return getPostsFromUser(userId);
     }
 
+    public List<PostDTO> getFeedPosts(Long userId) {
+        if(!userRepository.existsById(userId)) {
+            throw new IllegalArgumentException("no user with id : " + userId);
+        }
+
+        List<Post> posts = postRepository.findAllByFollowing(userId);
+
+        return posts.stream()
+                .map(postMapper::postToPostDTO)
+                .collect(Collectors.toList());
+    }
+
     private void deletePostPictures(Post post) {
         for(String webPath : post.getImages()) {
             FileUploadUtil.deleteFileAtPath(webPath, POST_PICTURE_DIRECTORY);

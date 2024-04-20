@@ -34,4 +34,9 @@ public class PostController {
         return ResponseEntity.ok(postService.deletePost(postId));
     }
 
+    @GetMapping("/getFeed/{userId}")
+    public ResponseEntity<List<PostDTO>> getFeedPosts(@PathVariable Long userId) {
+        return ResponseEntity.ok(postService.getFeedPosts(userId));
+    }
+
 }

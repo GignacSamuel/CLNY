@@ -1,7 +1,44 @@
 import Header from "../components/Header";
 import NewPost from "../components/NewPost"
+import PostList from "../components/PostList";
+import React, {useContext, useEffect, useState} from "react";
+import {AuthContext} from "../context/AuthContext";
+import {toast} from "../components/ui/use-toast";
 
 function HomePage() {
+    const [feedPosts, setFeedPosts] = useState([]);
+    const { user, token } = useContext(AuthContext);
+
+    const getFeedPosts = () => {
+        fetch(`/post/getFeed/${user.id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                setFeedPosts(data)
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                });
+            });
+    }
+
+    useEffect(() => {
+        getFeedPosts()
+    }, []);
 
     const Body = () => {
         return (
@@ -29,6 +66,7 @@ function HomePage() {
         return (
             <div className="bg-slate-100 m-6 p-6">
                 <NewPost />
+                <PostList posts={feedPosts}/>
             </div>
         );
     }
