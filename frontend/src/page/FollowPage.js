@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import Header from "../components/Header";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {toast} from "../components/ui/use-toast";
 import {AuthContext} from "../context/AuthContext";
 import {useFollow} from "../context/FollowContext";
@@ -14,6 +14,7 @@ function FollowPage() {
     const { user, token } = useContext(AuthContext);
     const { followedIds, updateFollowedIds } = useFollow();
     const [userSearchPosts, setUserSearchPostsState] = useState([]);
+    const navigate = useNavigate();
 
     const handleFollow = () => {
         fetch(`/userfollow/follow`, {
@@ -101,7 +102,36 @@ function FollowPage() {
     }
 
     const handleMessage = () => {
-        console.log("Message button clicked");
+        const conversationDTO = {
+            participants: [user, userSearch]
+        }
+
+        fetch(`/message/createConversation`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(conversationDTO),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Unknown error');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                navigate("/message", { state: { selectedConversation: data } });
+            })
+            .catch(error => {
+                toast({
+                    variant: "destructive",
+                    title: "Uh oh! Something went wrong.",
+                    description: error.message,
+                });
+            });
     };
 
     useEffect(() => {
