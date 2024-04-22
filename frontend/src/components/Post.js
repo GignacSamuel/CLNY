@@ -26,6 +26,14 @@ function Post({ post }) {
         navigate('/post', { state: { post } });
     };
 
+    const handleUserClick = () => {
+        if (user && user.id === post.author.id) {
+            navigate('/profile');
+        } else {
+            navigate('/follow', { state: { userSearch: post.author } });
+        }
+    };
+
     const handleDelete = () => {
         fetch(`/post/deletePost/${post.id}`, {
             method: 'DELETE',
@@ -126,7 +134,7 @@ function Post({ post }) {
     return (
         <div className="bg-slate-100 rounded-lg relative">
             <div className="p-4 flex justify-between items-center">
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-3 cursor-pointer" onClick={handleUserClick}>
                     <Avatar>
                         <AvatarImage src={post.author.profile.profilePicture || "/profile_picture_placeholder.jpg"}/>
                         <AvatarFallback>CN</AvatarFallback>
