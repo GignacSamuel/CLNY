@@ -6,6 +6,7 @@ import {toast} from "../components/ui/use-toast";
 import {AuthContext} from "../context/AuthContext";
 import {useFollow} from "../context/FollowContext";
 import PostList from "../components/PostList";
+import { Mail } from 'lucide-react';
 
 function FollowPage() {
     const location = useLocation();
@@ -99,6 +100,10 @@ function FollowPage() {
             });
     }
 
+    const handleMessage = () => {
+        console.log("Message button clicked");
+    };
+
     useEffect(() => {
         getUserPosts()
     }, []);
@@ -139,25 +144,33 @@ function FollowPage() {
                     </div>
                 </div>
                 <div className="flex justify-between items-center pt-6">
-                    <div className="flex flex-col">
+                    <div className="flex-1 mr-4">
                         <p className="text-2xl font-semibold">{userSearch.firstName && userSearch.lastName ? `${userSearch.firstName} ${userSearch.lastName}` : 'User Name'}</p>
                         <p className="text-gray-600">{userSearch.profile.biography || 'Bio.'}</p>
                     </div>
-                    {isFollowed ? (
+                    <div className="flex items-center">
                         <button
-                            onClick={handleUnfollow}
-                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={handleMessage}
+                            className="ml-8 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center"
                         >
-                            Unfollow
+                            <Mail className="mr-2"/> Message
                         </button>
-                    ) : (
-                        <button
-                            onClick={handleFollow}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        >
-                            Follow
-                        </button>
-                    )}
+                        {isFollowed ? (
+                            <button
+                                onClick={handleUnfollow}
+                                className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            >
+                                Unfollow
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleFollow}
+                                className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            >
+                                Follow
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         );

@@ -136,4 +136,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InvalidConversationParticipantsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidConversationParticipantsException() {
+        ErrorResponse errorResponse = new ErrorResponse("Conversation must include at least 2 participants.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }
