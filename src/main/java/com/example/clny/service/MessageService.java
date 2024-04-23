@@ -2,10 +2,14 @@ package com.example.clny.service;
 
 import com.example.clny.dto.ConversationDTO;
 import com.example.clny.dto.MessageDTO;
+import com.example.clny.exception.custom.EmptyMessageException;
 import com.example.clny.exception.custom.InvalidConversationParticipantsException;
+import com.example.clny.exception.custom.NoMessageAuthorException;
+import com.example.clny.exception.custom.NoMessageConversationException;
 import com.example.clny.mapper.ConversationMapper;
 import com.example.clny.mapper.MessageMapper;
 import com.example.clny.model.Conversation;
+import com.example.clny.model.Message;
 import com.example.clny.repository.ConversationRepository;
 import com.example.clny.repository.MessageRepository;
 import com.example.clny.repository.UserRepository;
@@ -67,6 +71,29 @@ public class MessageService {
         Conversation conversation = conversationMapper.conversationDTOToConversation(conversationDTO);
 
         return conversationMapper.conversationToConversationDTO(conversationRepository.save(conversation));
+    }
+
+    public List<MessageDTO> sendMessage(MessageDTO messageDTO) throws Exception {
+        if(messageDTO == null) {
+            throw new IllegalArgumentException("param messageDTO cannot be null.");
+        }
+
+        if(messageDTO.getContent() == null || messageDTO.getContent().trim().isEmpty()) {
+            throw new EmptyMessageException();
+        }
+
+        if(messageDTO.getAuthor() == null) {
+            throw new NoMessageAuthorException();
+        }
+
+        if(messageDTO.getConversation() == null) {
+            throw new NoMessageConversationException();
+        }
+
+        Message message = messageMapper.messageDTOToMessage(messageDTO);
+        messageRepository.save(message);
+
+        return getMessages(messageDTO.getConversation().getId());
     }
 
 }

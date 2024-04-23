@@ -142,4 +142,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EmptyMessageException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyMessageException() {
+        ErrorResponse errorResponse = new ErrorResponse("Message cannot be empty.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoMessageAuthorException.class)
+    public ResponseEntity<ErrorResponse> handleNoMessageAuthorException() {
+        ErrorResponse errorResponse = new ErrorResponse("Message must have an author.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoMessageConversationException.class)
+    public ResponseEntity<ErrorResponse> handleNoMessageConversationException() {
+        ErrorResponse errorResponse = new ErrorResponse("Message must be linked to a conversation.");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
 }
