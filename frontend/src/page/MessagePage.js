@@ -63,7 +63,6 @@ function MessagePage() {
                 return response.json();
             })
             .then(data => {
-                console.log(data);
                 setMessages(data);
             })
             .catch(error => {
@@ -102,8 +101,39 @@ function MessagePage() {
         const [message, setMessage] = useState("");
 
         const sendMessage = () => {
-            console.log(message);
-            setMessage("");
+            const messageDTO = {
+                content: message,
+                author: user,
+                conversation: selectedConversation
+            }
+
+            fetch(`/message/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(messageDTO),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.message || 'Unknown error');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    setMessage("");
+                    setMessages(data)
+                })
+                .catch(error => {
+                    toast({
+                        variant: "destructive",
+                        title: "Uh oh! Something went wrong.",
+                        description: error.message,
+                    });
+                });
         };
 
         return (
@@ -123,10 +153,20 @@ function MessagePage() {
             <ConversationList />
             <div className="flex flex-col flex-1 bg-slate-100 p-6">
                 {selectedConversation ? (
-                    <div className="flex flex-col justify-between flex-1">
-                        <div>
-                            <div>Selected Conversation: {selectedConversation.id}</div>
-                            <div>Messages</div>
+                    <div className="flex flex-col h-full">
+                        <div className="flex-1 overflow-y-auto mb-4" style={{ maxHeight: '80vh' }}>
+                            {messages.map(message => (
+                                <div
+                                    key={message.id}
+                                    className={`p-4 my-2 rounded-lg max-w-3/4 ${
+                                        message.author.id === user.id
+                                            ? 'ml-auto bg-blue-100'
+                                            : 'mr-auto bg-white'
+                                    }`}
+                                >
+                                    {message.content}
+                                </div>
+                            ))}
                         </div>
                         <TextAreaWithButton />
                     </div>

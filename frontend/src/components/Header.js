@@ -5,7 +5,7 @@ import React, {useContext, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {AuthContext} from "../context/AuthContext";
 import { toast } from '../components/ui/use-toast';
-import { LogOut, Home } from 'lucide-react';
+import { LogOut, Home, MailOpen } from 'lucide-react';
 
 function Header() {
     const navigate = useNavigate();
@@ -23,6 +23,10 @@ function Header() {
 
     const handleHomeClick = () => {
         navigate('/home');
+    };
+
+    const handleMessagesClick = () => {
+        navigate('/message');
     };
 
     const handleUserSearch = () => {
@@ -74,6 +78,9 @@ function Header() {
                         <Button type="button" onClick={handleUserSearch}>Search</Button>
                     </div>
                 </div>
+                <Button onClick={handleMessagesClick} className="bg-green-500 hover:bg-green-600 mr-2">
+                    <MailOpen color="white"/>
+                </Button>
                 <div className="mr-2 cursor-pointer" onClick={handleProfileClick}>
                     <Avatar>
                         <AvatarImage src={user.profile.profilePicture || "/profile_picture_placeholder.jpg"}/>
