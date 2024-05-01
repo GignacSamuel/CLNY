@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import { useLocation } from 'react-router-dom';
 import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext";
@@ -22,6 +22,7 @@ function TextAreaWithButton({ sendMessage, message, setMessage }) {
 function MessagesView({ selectedConversation, token, user }) {
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
         let interval;
@@ -39,6 +40,12 @@ function MessagesView({ selectedConversation, token, user }) {
             }
         };
     }, [selectedConversation]);
+
+    useEffect(() => {
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
 
     const getMessages = (conversationId) => {
         fetch(`/message/getMessages/${conversationId}`, {
@@ -106,7 +113,7 @@ function MessagesView({ selectedConversation, token, user }) {
     return (
         <div className="flex flex-col h-full">
             <div className="flex-1 overflow-y-auto mb-4" style={{ maxHeight: '80vh' }}>
-                {messages.map((message) => (
+                {messages.map((message, index) => (
                     <div
                         key={message.id}
                         className={`p-4 my-2 rounded-lg max-w-3/4 ${
@@ -115,9 +122,11 @@ function MessagesView({ selectedConversation, token, user }) {
                                 : 'mr-auto bg-white'
                         }`}
                     >
+                        <div className="font-bold">{`${message.author.firstName} ${message.author.lastName}`}</div>
                         {message.content}
                     </div>
                 ))}
+                <div ref={messagesEndRef} /> {/* Place ref at the end of message list */}
             </div>
             <TextAreaWithButton sendMessage={sendMessage} message={message} setMessage={setMessage} />
         </div>
@@ -171,9 +180,9 @@ function MessagePage() {
                 <div
                     key={conversation.id}
                     onClick={() => handleSelectConversation(conversation)}
-                    className={`p-4 hover:bg-slate-200 ${selectedConversation && selectedConversation.id === conversation.id ? 'bg-blue-500' : ''}`}
+                    className={`p-4 hover:bg-slate-200 shadow-md ${selectedConversation && selectedConversation.id === conversation.id ? 'bg-blue-500' : ''}`}
                 >
-                    {conversation.participants.map((p) => p.firstName).join(", ")}
+                    {conversation.participants.map(p => `${p.firstName} ${p.lastName}`).join(", ")}
                 </div>
             ))}
         </div>
