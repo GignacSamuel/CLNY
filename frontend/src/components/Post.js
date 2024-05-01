@@ -51,6 +51,7 @@ function Post({ post }) {
             })
             .then(data => {
                 setUserPosts(data)
+                navigate('/profile');
             })
             .catch(error => {
                 toast({
