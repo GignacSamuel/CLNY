@@ -65,11 +65,11 @@ function Header() {
             <div className="flex items-center flex-shrink-0 mr-6">
                 <img className="rounded-lg h-[50px]" src="/logo_small.png" alt="CLNY Logo"/>
             </div>
-            <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+            <div className="w-full block flex-grow lg:flex md:flex items-center lg:w-auto md:w-auto">
                 <Button onClick={handleHomeClick} className="mr-4">
                     <Home color="white"/>
                 </Button>
-                <div className="lg:flex-grow">
+                <div className="flex-grow">
                     <div className="flex w-full max-w-sm items-center space-x-2">
                         <Input
                             placeholder="Search for a user"
