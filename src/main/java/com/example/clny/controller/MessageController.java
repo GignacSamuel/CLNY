@@ -1,6 +1,5 @@
 package com.example.clny.controller;
 
-import com.example.clny.dto.CommentDTO;
 import com.example.clny.dto.ConversationDTO;
 import com.example.clny.dto.MessageDTO;
 import com.example.clny.service.MessageService;
