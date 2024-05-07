@@ -5,6 +5,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../context/AuthContext";
 import {toast} from "../components/ui/use-toast";
 import CalendarWidget from "../components/widgets/CalendarWidget";
+import WeatherWidget from "../components/widgets/WeatherWidget";
 
 function HomePage() {
     const [feedPosts, setFeedPosts] = useState([]);
@@ -76,7 +77,9 @@ function HomePage() {
 
     const Right = () => {
         return (
-            <div className="bg-slate-100 m-6 p-6">Right</div>
+            <div className="bg-slate-100 m-6 p-6">
+                <WeatherWidget/>
+            </div>
         );
     }
 
