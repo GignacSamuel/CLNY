@@ -4,6 +4,7 @@ import PostList from "../components/PostList";
 import React, {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../context/AuthContext";
 import {toast} from "../components/ui/use-toast";
+import CalendarWidget from "../components/widgets/CalendarWidget";
 
 function HomePage() {
     const [feedPosts, setFeedPosts] = useState([]);
@@ -58,7 +59,9 @@ function HomePage() {
 
     const Left = () => {
         return (
-            <div className="bg-slate-100 m-6 p-6">Left</div>
+            <div className="bg-slate-100 m-6 p-6">
+                <CalendarWidget/>
+            </div>
         );
     }
 
