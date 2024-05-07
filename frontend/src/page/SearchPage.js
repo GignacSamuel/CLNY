@@ -3,6 +3,8 @@ import {useLocation, useNavigate} from "react-router-dom";
 import React, {useContext} from "react";
 import {AuthContext} from "../context/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
+import CalendarWidget from "../components/widgets/CalendarWidget";
+import WeatherWidget from "../components/widgets/WeatherWidget";
 
 function SearchPage() {
     const location = useLocation();
@@ -28,7 +30,9 @@ function SearchPage() {
 
     const Left = () => {
         return (
-            <div className="bg-slate-100 m-6 p-6">Left</div>
+            <div className="bg-slate-100 m-6 p-6">
+                <CalendarWidget/>
+            </div>
         );
     }
 
@@ -65,7 +69,9 @@ function SearchPage() {
 
     const Right = () => {
         return (
-            <div className="bg-slate-100 m-6 p-6">Right</div>
+            <div className="bg-slate-100 m-6 p-6">
+                <WeatherWidget/>
+            </div>
         );
     }
 

@@ -3,6 +3,8 @@ import Post from "../components/Post";
 import React from "react";
 import {useLocation} from "react-router-dom";
 import CommentsSection from "../components/CommentSection";
+import CalendarWidget from "../components/widgets/CalendarWidget";
+import WeatherWidget from "../components/widgets/WeatherWidget";
 
 function PostPage() {
     const location = useLocation();
@@ -26,7 +28,9 @@ function PostPage() {
 
     const Left = () => {
         return (
-            <div className="bg-slate-100 m-6 p-6">Left</div>
+            <div className="bg-slate-100 m-6 p-6">
+                <CalendarWidget/>
+            </div>
         );
     }
 
@@ -45,7 +49,9 @@ function PostPage() {
 
     const Right = () => {
         return (
-            <div className="bg-slate-100 m-6 p-6">Right</div>
+            <div className="bg-slate-100 m-6 p-6">
+                <WeatherWidget/>
+            </div>
         );
     }
 

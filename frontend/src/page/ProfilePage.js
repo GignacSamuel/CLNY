@@ -17,6 +17,8 @@ import Header from "../components/Header";
 import NewPost from "../components/NewPost";
 import {PostContext} from "../context/PostContext";
 import PostList from "../components/PostList";
+import CalendarWidget from "../components/widgets/CalendarWidget";
+import WeatherWidget from "../components/widgets/WeatherWidget";
 
 function ProfilePage() {
     const { user, token, setUser } = useContext(AuthContext);
@@ -236,13 +238,17 @@ function ProfilePage() {
 
     const Left = () => {
         return (
-            <div className="bg-slate-100 m-6 p-6">Left</div>
+            <div className="bg-slate-100 m-6 p-6">
+                <CalendarWidget/>
+            </div>
         );
     }
 
     const Right = () => {
         return (
-            <div className="bg-slate-100 m-6 p-6">Right</div>
+            <div className="bg-slate-100 m-6 p-6">
+                <WeatherWidget/>
+            </div>
         );
     }
 
