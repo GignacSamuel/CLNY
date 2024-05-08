@@ -6,7 +6,7 @@ function WeatherWidget() {
     useEffect(() => {
         const fetchWeather = async (latitude, longitude) => {
             const apiKey = process.env.REACT_APP_WEATHER_API_KEY;
-            const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=no`;
+            const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${latitude},${longitude}&aqi=no&lang=fr`;
 
             try {
                 const response = await fetch(url);
@@ -36,7 +36,7 @@ function WeatherWidget() {
     }, []);
 
     if (!weather) {
-        return <div>Loading...</div>;
+        return <div>Chargement...</div>;
     }
 
     return (
@@ -49,12 +49,12 @@ function WeatherWidget() {
                 </div>
             </div>
             <div className="mt-4">
-                <p className="text-sm text-gray-500">Humidity: {weather.current.humidity}%</p>
-                <p className="text-sm text-gray-500">Wind: {weather.current.wind_kph} kph from {weather.current.wind_dir}</p>
-                <p className="text-sm text-gray-500">Feels like: {weather.current.feelslike_c}°C</p>
+                <p className="text-sm text-gray-500">Humidité: {weather.current.humidity}%</p>
+                <p className="text-sm text-gray-500">Vent: {weather.current.wind_kph} kph du {weather.current.wind_dir}</p>
+                <p className="text-sm text-gray-500">Ressenti: {weather.current.feelslike_c}°C</p>
             </div>
             <div className="mt-2 text-right text-xs text-gray-400">
-                Last updated: {weather.current.last_updated}
+                Dernière mise à jour: {weather.current.last_updated}
             </div>
         </div>
     );

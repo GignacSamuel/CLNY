@@ -69,7 +69,7 @@ function NewPost() {
                 onChange={handleContentChange}
                 className="w-full px-3 py-2 text-gray-700 border rounded-lg focus:outline-none focus:shadow-outline mb-4"
                 rows="4"
-                placeholder="What's on your mind?"
+                placeholder="Qu'avez-vous en tête?"
             ></textarea>
             <div className="mb-4">
                 {images.length > 0 && (
@@ -88,7 +88,7 @@ function NewPost() {
             <div className="flex justify-between items-center">
                 <div className="flex items-center">
                     <label htmlFor="image-upload" className="px-4 py-2 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-600 cursor-pointer flex items-center">
-                        <ImagePlus className="mr-2"/> Add images
+                        <ImagePlus className="mr-2"/> Ajouter des images
                     </label>
                     <input
                         id="image-upload"
@@ -103,7 +103,7 @@ function NewPost() {
                     onClick={handlePublishPost}
                     className="px-4 py-2 text-white bg-green-500 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:shadow-outline-green active:bg-green-600 flex items-center"
                 >
-                    <Send color="white" className="mr-2"/> Publish
+                    <Send color="white" className="mr-2"/> Publier
                 </button>
             </div>
         </div>

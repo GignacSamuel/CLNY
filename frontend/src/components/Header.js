@@ -72,10 +72,10 @@ function Header() {
                 <div className="flex-grow">
                     <div className="flex w-full max-w-sm items-center space-x-2">
                         <Input
-                            placeholder="Search for a user"
+                            placeholder="Rechercher un utilisateur"
                             ref={searchRef}
                         />
-                        <Button type="button" onClick={handleUserSearch}>Search</Button>
+                        <Button type="button" onClick={handleUserSearch}>Rechercher</Button>
                     </div>
                 </div>
                 <Button onClick={handleMessagesClick} className="bg-green-500 hover:bg-green-600 mr-2">
@@ -89,7 +89,7 @@ function Header() {
                 </div>
                 <div>
                     <Button variant="destructive" onClick={handleLogout}>
-                        <LogOut color="white"/> Logout
+                        <LogOut color="white"/> Se déconnecter
                     </Button>
                 </div>
             </div>

@@ -106,16 +106,16 @@ function AuthPage() {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Password</FormLabel>
+                                <FormLabel>Mot de passe</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Password" {...field} />
+                                    <Input placeholder="Mot de passe" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                     <div className="flex justify-center">
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit">Soumettre</Button>
                     </div>
                 </form>
             </Form>
@@ -180,9 +180,9 @@ function AuthPage() {
                         name="firstName"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>First Name</FormLabel>
+                                <FormLabel>Prénom</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="First Name" {...field} />
+                                    <Input placeholder="Prénom" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -193,9 +193,9 @@ function AuthPage() {
                         name="lastName"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Last Name</FormLabel>
+                                <FormLabel>Nom de famille</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Last Name" {...field} />
+                                    <Input placeholder="Nom de famille" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -219,16 +219,16 @@ function AuthPage() {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Password</FormLabel>
+                                <FormLabel>Mot de passe</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Password" {...field} />
+                                    <Input placeholder="Mot de passe" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                     <div className="flex justify-center">
-                        <Button type="submit">Submit</Button>
+                        <Button type="submit">Soumettre</Button>
                     </div>
                 </form>
             </Form>
@@ -304,8 +304,8 @@ function AuthPage() {
                 <div className="flex-1 flex justify-center items-center m-4">
                     <Tabs defaultValue="login" className="w-full">
                         <TabsList className="flex justify-center">
-                            <TabsTrigger value="login">Login</TabsTrigger>
-                            <TabsTrigger value="register">Register</TabsTrigger>
+                            <TabsTrigger value="login">Se connecter</TabsTrigger>
+                            <TabsTrigger value="register">S'inscrire</TabsTrigger>
                         </TabsList>
                         <TabsContent value="login"><LoginForm /></TabsContent>
                         <TabsContent value="register"><RegisterForm /></TabsContent>
