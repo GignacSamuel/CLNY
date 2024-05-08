@@ -157,7 +157,7 @@ function FollowPage() {
 
     const Profile = () => {
         if (!userSearch) {
-            return <div className="bg-slate-100 m-6 p-6 text-gray-600">No results.</div>;
+            return <div className="bg-slate-100 m-6 p-6 text-gray-600">Aucun résultat.</div>;
         }
 
         const isFollowed = followedIds.includes(userSearch.id);
@@ -183,21 +183,21 @@ function FollowPage() {
                             onClick={handleMessage}
                             className="ml-8 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center"
                         >
-                            <Mail className="mr-2"/> Message
+                            <Mail className="mr-2"/> Converser
                         </button>
                         {isFollowed ? (
                             <button
                                 onClick={handleUnfollow}
                                 className="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                             >
-                                Unfollow
+                                Arrêter de suivre
                             </button>
                         ) : (
                             <button
                                 onClick={handleFollow}
                                 className="ml-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             >
-                                Follow
+                                Suivre
                             </button>
                         )}
                     </div>
