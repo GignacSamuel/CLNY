@@ -38,7 +38,7 @@ function SearchPage() {
 
     const Search = () => {
         if (!searchResults || searchResults.length === 0) {
-            return <div className="bg-slate-100 m-6 p-6 text-gray-600">No results.</div>;
+            return <div className="bg-slate-100 m-6 p-6 text-gray-600">Aucun résultat.</div>;
         }
 
         return (

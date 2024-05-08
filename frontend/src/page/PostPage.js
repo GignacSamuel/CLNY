@@ -36,7 +36,7 @@ function PostPage() {
 
     const Middle = () => {
         if (!post) {
-            return <div className="bg-slate-100 m-6 p-6">No results</div>;
+            return <div className="bg-slate-100 m-6 p-6">Aucun résultat</div>;
         }
 
         return (

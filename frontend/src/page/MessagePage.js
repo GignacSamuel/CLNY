@@ -10,11 +10,11 @@ function TextAreaWithButton({ sendMessage, message, setMessage }) {
     return (
         <div className="grid w-full gap-2">
             <Textarea
-                placeholder="Type your message here."
+                placeholder="Tapez votre message ici."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
             />
-            <Button onClick={sendMessage}>Send message</Button>
+            <Button onClick={sendMessage}>Envoyer le message</Button>
         </div>
     );
 }
@@ -195,7 +195,7 @@ function MessagePage() {
                 {selectedConversation ? (
                     <MessagesView selectedConversation={selectedConversation} token={token} user={user} />
                 ) : (
-                    <div>Select a conversation to view messages.</div>
+                    <div>Sélectionnez une conversation pour afficher les messages.</div>
                 )}
             </div>
         </div>

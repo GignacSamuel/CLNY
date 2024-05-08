@@ -115,19 +115,19 @@ function CommentsSection({ post }) {
                 <p className="mt-4">{comment.content}</p>
                 <div className="flex justify-start mt-2">
                     <Button onClick={() => setActiveReplyBox(comment.id === activeReplyBox ? null : comment.id)}>
-                        <Reply color="white"/> Reply
+                        <Reply color="white"/> Répondre
                     </Button>
                 </div>
                 {activeReplyBox === comment.id && (
                     <div className="mt-2">
                         <textarea
                             className="w-full p-2 border rounded-lg"
-                            placeholder="Write a reply..."
+                            placeholder="Écrire une réponse..."
                             value={reply}
                             onChange={(e) => setReply(e.target.value)}
                         />
                         <Button onClick={() => handleReplySubmit(reply, comment.id)} className="mt-2">
-                            <Send color="white" className="mr-2"/> Send
+                            <Send color="white" className="mr-2"/> Envoyer
                         </Button>
                     </div>
                 )}
@@ -147,7 +147,7 @@ function CommentsSection({ post }) {
             <form onSubmit={handleCommentSubmit} className="flex flex-col mb-6">
                 <textarea
                     className="w-full p-2 border rounded-lg"
-                    placeholder="Add a comment..."
+                    placeholder="Ajouter un commentaire..."
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                 />
@@ -155,7 +155,7 @@ function CommentsSection({ post }) {
                     type="submit"
                     className="self-end mt-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex items-center"
                 >
-                    <Send color="white" className="mr-2"/> Publish
+                    <Send color="white" className="mr-2"/> Publier
                 </button>
             </form>
             <div>

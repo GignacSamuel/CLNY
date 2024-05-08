@@ -213,13 +213,13 @@ function ProfilePage() {
                         <p className="text-gray-600">{user.profile.biography || 'Bio.'}</p>
                         <Dialog>
                             <DialogTrigger asChild>
-                                <Button>Edit Bio</Button>
+                                <Button>Modifier la bio</Button>
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Edit Biography</DialogTitle>
+                                    <DialogTitle>Modifier la biographie</DialogTitle>
                                     <DialogDescription>
-                                        Update your biography information below.
+                                        Mettez à jour votre biographie ci-dessous.
                                     </DialogDescription>
                                 </DialogHeader>
                                 <Textarea
@@ -227,7 +227,7 @@ function ProfilePage() {
                                     defaultValue={user.profile.biography || 'Bio.'}
                                     className="w-full mt-4"
                                 />
-                                <Button onClick={handleBiographyChange}>Save changes</Button>
+                                <Button onClick={handleBiographyChange}>Sauvegarder les modifications</Button>
                             </DialogContent>
                         </Dialog>
                     </div>

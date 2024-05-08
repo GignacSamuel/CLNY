@@ -176,15 +176,15 @@ function Post({ post }) {
                 <div className="flex space-x-4">
                     <button onClick={() => addReaction('LIKE')}
                             className="px-4 py-2 text-white bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-600 cursor-pointer flex items-center">
-                        <ThumbsUp color="white" className="mr-2"/> Like {countReactions('LIKE')}
+                        <ThumbsUp color="white" className="mr-2"/> J'aime {countReactions('LIKE')}
                     </button>
                     <button onClick={() => addReaction('DISLIKE')}
                             className="px-4 py-2 text-white bg-red-500 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:shadow-outline-red active:bg-red-600 cursor-pointer flex items-center">
-                        <ThumbsDown color="white" className="mr-2"/> Dislike {countReactions('DISLIKE')}
+                        <ThumbsDown color="white" className="mr-2"/> Je n'aime pas {countReactions('DISLIKE')}
                     </button>
                 </div>
                 <Button onClick={handleCommentClick}>
-                    <MessageSquarePlus color="white"/> Comment
+                    <MessageSquarePlus color="white"/> Commenter
                 </Button>
             </div>
         </div>
