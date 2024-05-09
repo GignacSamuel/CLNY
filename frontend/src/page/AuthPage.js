@@ -297,7 +297,7 @@ function AuthPage() {
                 opacity: backgroundOpacity,
             }}
         >
-            <div className="h-2/3 w-2/3 flex justify-around items-center bg-white rounded-lg shadow">
+            <div className="h-3/4 w-2/3 flex justify-around items-center bg-white rounded-lg shadow">
                 <div className="flex-1 flex justify-center items-center m-4">
                     <img className="rounded-lg" src="/logo.png" alt="CLNY Logo"/>
                 </div>

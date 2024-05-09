@@ -39,7 +39,12 @@ public final class FileUploadUtil {
     }
 
     public static String getWebPath(Path storePath) {
-        return storePath.toString().substring(storePath.toString().indexOf("/uploads"));
+        String path = storePath.toString();
+        int uploadsIndex = path.indexOf("uploads");
+        if (uploadsIndex == -1) {
+            throw new IllegalStateException("The path does not contain 'uploads'");
+        }
+        return path.substring(uploadsIndex).replace(File.separatorChar, '/');
     }
 
     public static void deleteFileAtPath(String webPath, Path directory) {
